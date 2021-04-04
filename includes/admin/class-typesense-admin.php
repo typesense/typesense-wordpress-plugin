@@ -42,7 +42,7 @@ class Typesense_Admin {
 
 		$api = $plugin->get_api();
 		//if ( $api->is_reachable() ) {
-			new Typesense_Admin_Page_Autocomplete( $plugin->get_settings());
+			new Typesense_Admin_Page_Autocomplete( $plugin->get_settings(), $plugin->get_autocomplete_config());
 			new Typesense_Admin_Page_Native_Search( $plugin );
 
 			add_action( 'wp_ajax_typesense_re_index', array( $this, 're_index' ) );

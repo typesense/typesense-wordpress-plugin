@@ -177,7 +177,7 @@ class Typesense_Posts_Index  extends Typesense_Index{
 
 		//foreach ( $parts as $i => $part ) {
 			$records                 = $shared_attributes;
-			$records['id']     = '1000';//$this->get_post_object_id( $post->ID,  );
+			$records['id']     = '6000';//$this->get_post_object_id( $post->ID,  );
 			//$record['content']      = $part;
 			//$record['record_index'] = $i;
 			//$records[]              = $record;

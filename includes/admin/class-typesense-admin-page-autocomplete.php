@@ -83,12 +83,12 @@ class Typesense_Admin_Page_Autocomplete {
 	 * @param Typesense_Settings            $settings            The Typesense_Settings object.
 	 * @param Typesense_Autocomplete_Config $autocomplete_config The Typesense_Autocomplete_Config object.
 	 */
-	public function __construct(Typesense_Settings $settings) {
+	public function __construct(Typesense_Settings $settings, Typesense_Autocomplete_Config $autocomplete_config) {
 		$this->settings            = $settings;
-		//$this->autocomplete_config = $autocomplete_config;
+		$this->autocomplete_config = $autocomplete_config;
 
 		add_action( 'admin_menu', array( $this, 'add_page' ) );
-		//add_action( 'admin_init', array( $this, 'add_settings' ) );
+		add_action( 'admin_init', array( $this, 'add_settings' ) );
 		//add_action( 'admin_notices', array( $this, 'display_errors' ) );
 
 		// @todo: Listen for de-index to remove from autocomplete.

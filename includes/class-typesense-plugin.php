@@ -150,7 +150,7 @@ class Typesense_Plugin {
 			//$this->autocomplete_config = new Typesense_Autocomplete_Config( $this );
 			//$this->template_loader     = new Typesense_Template_Loader( $this );
 		}
-		//$this->autocomplete_config = new Typesense_Autocomplete_Config( $this );
+		$this->autocomplete_config = new Typesense_Autocomplete_Config( $this );
 		$this->load_indices();
 		// Load admin or public part of the plugin.
 		if ( is_admin() ) {

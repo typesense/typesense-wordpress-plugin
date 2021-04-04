@@ -268,7 +268,7 @@ abstract class Typesense_Index {
 			$shared_attributes['post_title']          = $post->post_title;
 			$shared_attributes['comment_count']       = (int) $post->comment_count;
 			$shared_attributes['post_content'] = apply_filters( 'the_content', $content );
-			$shared_attributes['id']     = '1000';
+			$shared_attributes['id']     = '3000';
 			$shared_attributes['post_date']           = (string)get_post_time( 'U', false, $post );
 			$shared_attributes['post_modified']       = (string)get_post_modified_time( 'U', false, $post );
 			$shared_attributes['is_sticky'] = is_sticky( $post->ID ) ? 1 : 0;
