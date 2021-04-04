@@ -84,7 +84,9 @@ class Typesense_API {
 	public function get_client(){
 
 		//$application_id = $this->settings->get_application_id();
-		//$api_key        = $this->settings->get_api_key();
+		$api_key        = (string)$this->settings->get_api_key();
+		$host			= (string)$this->settings->get_host();
+		$port			= (string)$this->settings->get_port();
 		/*
 		if (
 			empty( $application_id ) ||
@@ -95,11 +97,11 @@ class Typesense_API {
 		*/
 		$this->client = new Client(
 			[
-			  'api_key'         => '123',
+			  'api_key'         => $api_key,
 			  'nodes'           => [
 				[
-				  'host'     => 'localhost',
-				  'port'     => '8108',
+				  'host'     => $host,
+				  'port'     => $port,
 				  'protocol' => 'http',
 				],
 			  ],

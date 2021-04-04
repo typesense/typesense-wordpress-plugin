@@ -158,9 +158,25 @@ class Typesense_Admin_Page_Settings {
 		);
 */
 		add_settings_field(
-			'typesense_search_api_key',
-			esc_html__( 'Search-only API key', 'wp-search-with-typesense' ),
-			array( $this, 'search_api_key_callback' ),
+			'typesense_api_key',
+			esc_html__( 'API key', 'wp-search-with-typesense' ),
+			array( $this, 'api_key_callback' ),
+			$this->slug,
+			$this->section
+		);
+
+		add_settings_field(
+			'typesense_host',
+			esc_html__( 'Server Host', 'wp-search-with-typesense' ),
+			array( $this, 'host_callback' ),
+			$this->slug,
+			$this->section
+		);
+
+		add_settings_field(
+			'typesense_port',
+			esc_html__( 'Server Port', 'wp-search-with-typesense' ),
+			array( $this, 'port_callback' ),
 			$this->slug,
 			$this->section
 		);
@@ -189,8 +205,10 @@ class Typesense_Admin_Page_Settings {
 			$this->section
 		);
 
+		register_setting( $this->option_group, 'typesense_port' );
+		register_setting( $this->option_group, 'typesense_host');
 		//register_setting( $this->option_group, 'typesense_application_id', array( $this, 'sanitize_application_id' ) );
-		register_setting( $this->option_group, 'typesense_search_api_key', array( $this, 'sanitize_search_api_key' ) );
+		register_setting( $this->option_group, 'typesense_api_key' );
 		//register_setting( $this->option_group, 'typesense_api_key', array( $this, 'sanitize_api_key' ) );
 		//register_setting( $this->option_group, 'typesense_index_name_prefix', array( $this, 'sanitize_index_name_prefix' ) );
 		//register_setting( $this->option_group, 'typesense_powered_by_enabled', array( $this, 'sanitize_powered_by_enabled' ) );
@@ -230,6 +248,27 @@ class Typesense_Admin_Page_Settings {
 <?php
 	}
 
+	public function host_callback() {
+		$settings      = $this->plugin->get_settings();
+		$setting       = $settings->get_host();
+		//$disabled_html = $settings->is_search_api_key_in_config() ? ' disabled' : '';
+
+?>
+		<input type="text" name="typesense_host" class="regular-text" value="<?php echo esc_attr( $setting ); ?>"/>
+		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense Server Host.', 'wp-search-with-typesense' ); ?></p>
+<?php
+	}
+
+	public function port_callback() {
+		$settings      = $this->plugin->get_settings();
+		$setting       = $settings->get_port();
+		//$disabled_html = $settings->is_search_api_key_in_config() ? ' disabled' : '';
+
+?>
+		<input type="text" name="typesense_port" class="regular-text" value="<?php echo esc_attr( $setting ); ?>"/>
+		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense Server Port.', 'wp-search-with-typesense' ); ?></p>
+<?php
+	}
 	/**
 	 * Admin API key callback.
 	 *
@@ -239,10 +278,10 @@ class Typesense_Admin_Page_Settings {
 	public function api_key_callback() {
 		$settings      = $this->plugin->get_settings();
 		$setting       = $settings->get_api_key();
-		$disabled_html = $settings->is_api_key_in_config() ? ' disabled' : '';
+		//$disabled_html = $settings->is_api_key_in_config() ? ' disabled' : '';
 ?>
-		<input type="password" name="typesense_api_key" class="regular-text" value="<?php echo esc_attr( $setting ); ?>" <?php echo esc_html( $disabled_html ); ?>/>
-		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense ADMIN API key (kept private).', 'wp-search-with-typesense' ); ?></p>
+		<input type="text" name="typesense_api_key" class="regular-text" value="<?php echo esc_attr( $setting ); ?>"/>
+		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense API key.', 'wp-search-with-typesense' ); ?></p>
 <?php
 	}
 
@@ -316,19 +355,53 @@ class Typesense_Admin_Page_Settings {
 	 *
 	 * @return string
 	 */
-	public function sanitize_search_api_key( $value ) {
-		if ( $this->plugin->get_settings()->is_search_api_key_in_config() ) {
-			$value = $this->plugin->get_settings()->get_search_api_key();
-		}
+	public function sanitize_api_key( $value ) {
+		//if ( $this->plugin->get_settings()->is_search_api_key_in_config() ) {
+			$value = $this->plugin->get_settings()->get_api_key();
+		//}
 		$value = sanitize_text_field( $value );
 
 		if ( empty( $value ) ) {
 			add_settings_error(
 				$this->option_group,
 				'empty',
-				esc_html__( 'Search-only API key should not be empty.', 'wp-search-with-typesense' )
+				esc_html__( 'API key should not be empty.', 'wp-search-with-typesense' )
 			);
 		}
+
+		return $value;
+	}
+
+	public function sanitize_host( $value ) {
+		//if ( $this->plugin->get_settings()->is_search_api_key_in_config() ) {
+			$value = $this->plugin->get_settings()->get_host();
+		//}
+		$value = sanitize_text_field( $value );
+
+		if ( empty( $value ) ) {
+			add_settings_error(
+				$this->option_group,
+				'empty',
+				esc_html__( 'Host should not be empty.', 'wp-search-with-typesense' )
+			);
+		}
+
+		return $value;
+	}
+
+	public function sanitize_port( $value ) {
+		//if ( $this->plugin->get_settings()->is_search_api_key_in_config() ) {
+			$value = $this->plugin->get_settings()->get_port();
+		//}
+		$value = sanitize_text_field( $value );
+
+		/*if ( empty( $value ) ) {
+			add_settings_error(
+				$this->option_group,
+				'empty',
+				esc_html__( 'Port should not be empty.', 'wp-search-with-typesense' )
+			);
+		}*/
 
 		return $value;
 	}
@@ -343,10 +416,11 @@ class Typesense_Admin_Page_Settings {
 	 *
 	 * @return string
 	 */
+	/*
 	public function sanitize_api_key( $value ) {
-		if ( $this->plugin->get_settings()->is_api_key_in_config() ) {
+		//if ( $this->plugin->get_settings()->is_api_key_in_config() ) {
 			$value = $this->plugin->get_settings()->get_api_key();
-		}
+		//}
 		$value = sanitize_text_field( $value );
 
 		if ( empty( $value ) ) {
@@ -412,7 +486,7 @@ class Typesense_Admin_Page_Settings {
 
 		return $value;
 	}
-
+*/
 	/**
 	 * Determine if the index name prefix is valid.
 	 *

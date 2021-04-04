@@ -25,6 +25,10 @@ class Typesense_Settings {
 		add_option( 'typesense_application_id', '' );
 		add_option( 'typesense_search_api_key', '' );
 		add_option( 'typesense_api_key', '' );
+		add_option( 'typesense_post_count', 0 );
+		add_option( 'typesense_api_key', '' );
+		add_option( 'typesense_host', 'localhost' );
+		add_option( 'typesense_port', '8108' );
 		add_option( 'typesense_synced_indices_ids', array() );
 		add_option( 'typesense_autocomplete_enabled', 'no' );
 		add_option( 'typesense_autocomplete_config', array() );
@@ -81,14 +85,15 @@ class Typesense_Settings {
 	 * @return string
 	 */
 	public function get_api_key() {
-		if ( ! $this->is_api_key_in_config() ) {
+		return (string) get_option( 'typesense_api_key', '' );
+	}
 
-			return (string) get_option( 'typesense_api_key', '' );
-		}
+	public function get_host() {
+			return (string) get_option( 'typesense_host', '' );
+	}
 
-		$this->assert_constant_is_non_empty_string( TYPESENSE_API_KEY, 'TYPESENSE_API_KEY' );
-
-		return TYPESENSE_API_KEY;
+	public function get_port() {
+		return (string) get_option( 'typesense_port', '' );
 	}
 
 	/**

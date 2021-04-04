@@ -279,18 +279,17 @@ class Typesense_Admin {
 		$indices = $this->plugin->get_indices();
 		//$post_index = $indices[0];
 		try{
-			$indices[0]->sync($document);
+			//$indices[0]->sync($document);
 			//$client = $this->plugin->get_api()->get_client();
 			//$client->collections['posts']->documents->create($document);
 			//echo gettype($this->plugin->get_api()->get_client());
 			//$client = $this->plugin->get_api()->get_client();
 			//$client->collections['posts']->documents->create($document);
+			throw new RuntimeException('All records indexed');
 		}
 		catch(Exception $e){
 			echo $e->getMessage();
 		}
-
-		echo 'Victory';
 	}
 
 	/**
@@ -303,7 +302,7 @@ class Typesense_Admin {
 	 * @throws Exception If index_id is not provided or if the corresponding index is null.
 	 */
 	public function push_settings() {
-
+/*
 		$index_id = filter_input( INPUT_POST, 'index_id', FILTER_SANITIZE_STRING );
 
 		try {
@@ -326,6 +325,6 @@ class Typesense_Admin {
 			echo esc_html( $exception->getMessage() );
 			throw $exception;
 		}
-
+*/
 	}
 }
