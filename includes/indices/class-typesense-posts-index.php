@@ -428,29 +428,7 @@ class Typesense_Posts_Index  extends Typesense_Index{
 		return (int) $query->found_posts;
 	}
 
-	public function create_collection_if_not_existing(){
-		$postsSchema=[
-			'name' => 'posts',
-			'fields' => [
-			  ['name' => 'post_content', 'type' => 'string'],
-			  ['name' => 'post_title', 'type' => 'string'],
-			  ['name' => 'comment_count', 'type' => 'int64'],
-			  ['name' => 'is_sticky', 'type' => 'int32'],
-			  ['name' => 'post_excerpt', 'type' => 'string'],
-			  ['name' => 'post_date', 'type' => 'string'],
-			  ['name' => 'post_id', 'type' => 'string'],
-			  ['name' => 'post_modified', 'type' => 'string'],
-			  ['name' => 'id', 'type' => 'string']
-			],
-			'default_sorting_field' => 'comment_count'
-		  ];
-		  try{
-			$client->collections->create($postsSchema);
-		  }
-		  catch(Exception $e){
-			  return;
-		  }
-	}
+
 
 	/**
 	 * Get items.

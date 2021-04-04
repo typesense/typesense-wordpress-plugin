@@ -620,7 +620,32 @@ abstract class Typesense_Index {
 	 */
 	abstract public function get_id();
 
-	abstract public function create_collection_if_not_existing();
+	//abstract public function create_collection_if_not_existing();
+	public function create_collection_if_not_existing(){
+		$postsSchema=[
+			'name' => 'posts',
+			'fields' => [
+			  ['name' => 'post_content', 'type' => 'string'],
+			  ['name' => 'post_title', 'type' => 'string'],
+			  ['name' => 'comment_count', 'type' => 'int64'],
+			  ['name' => 'is_sticky', 'type' => 'int32'],
+			  ['name' => 'post_excerpt', 'type' => 'string'],
+			  ['name' => 'post_date', 'type' => 'string'],
+			  ['name' => 'post_id', 'type' => 'string'],
+			  ['name' => 'post_modified', 'type' => 'string'],
+			  ['name' => 'id', 'type' => 'string']
+			],
+			'default_sorting_field' => 'comment_count'
+		  ];
+		/*  try{
+			$this->client->collections->create($postsSchema);
+		  }
+		  catch(Exception $e){
+			  return;
+		  }
+		  */
+		  $this->client->collections->create($postsSchema);
+	}
 	/**
 	 * Get items.
 	 *
