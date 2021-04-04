@@ -161,12 +161,13 @@ class Typesense_Autocomplete_Config {
 				unset( $config[ $key ] );
 				continue;
 			}
-
+////////////////////////////////////////////changes here
 			$index = $this->plugin->get_index( $entry['index_id'] );
 			if ( null === $index ) {
 				unset( $config[ $key ] );
 				continue;
 			}
+////////////////////////////////////////////changes here
 			$entry['index_name'] = $index->get_name();
 			$entry['enabled']    = true;
 		}

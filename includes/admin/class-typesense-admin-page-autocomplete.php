@@ -132,14 +132,14 @@ class Typesense_Admin_Page_Autocomplete {
 			array( $this, 'print_section_settings' ),
 			$this->slug
 		);
-	/*	add_settings_field(
+		add_settings_field(
 			'typesense_autocomplete_enabled',
 			esc_html__( 'Enable autocomplete', 'wp-search-with-typesense' ),
 			array( $this, 'autocomplete_enabled_callback' ),
 			$this->slug,
 			$this->section
 		);
-*/
+
 		add_settings_field(
 			'typesense_autocomplete_config',
 			esc_html__( 'Configuration', 'wp-search-with-typesense' ),
@@ -148,19 +148,8 @@ class Typesense_Admin_Page_Autocomplete {
 			$this->section
 		);
 
-//		register_setting( $this->option_group, 'typesense_autocomplete_enabled', array( $this, 'sanitize_autocomplete_enabled' ) );
+		register_setting( $this->option_group, 'typesense_autocomplete_enabled', array( $this, 'sanitize_autocomplete_enabled' ) );
 		register_setting( $this->option_group, 'typesense_autocomplete_config', array( $this, 'sanitize_autocomplete_config' ) );
-		/*
-		add_settings_field(
-			'typesense_autocomplete_config',
-			esc_html__( 'Configuration', 'wp-search-with-typesense' ),
-			array( $this, 'autocomplete_config_callback' ),
-			$this->slug,
-			$this->section
-		);
-
-		register_setting( $this->option_group, 'typesense_autocomplete_config', array( $this, 'sanitize_autocomplete_config' ) );
-	*/
 	}
 
 	/**

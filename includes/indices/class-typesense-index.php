@@ -259,6 +259,7 @@ abstract class Typesense_Index {
 	//	$this->assert_is_supported( $item );
 	//	if ( $this->should_index( $item ) ) {
 			//do_action( 'Typesense_before_get_records', $item );
+			$this->create_collection_if_not_existing();
 			$records = $this->get_records( $post );
 			//do_action( 'Typesense_after_get_records', $item );
 			$content = $post->post_content;
@@ -360,7 +361,7 @@ abstract class Typesense_Index {
 	 * @return string
 	 */
 	public function get_name() {
-		//return $prefix . $this->get_id();
+		return $prefix . $this->get_id();
 	}
 
 	/**
@@ -431,7 +432,7 @@ abstract class Typesense_Index {
 	 *
 	 * @param bool $clear_if_existing Whether to clear an existing index or not.
 	 */
-	public function create_index_if_not_existing( $clear_if_existing = true ) {
+/*	public function create_index_if_not_existing( $clear_if_existing = true ) {
 		$index = $this->get_index();
 
 		try {
@@ -450,7 +451,7 @@ abstract class Typesense_Index {
 			 *
 			 * @param bool   $clear_if_existing Whether to clear the existing index or not.
 			 * @param string $index_id          The index ID without prefix.
-			 */
+			 
 			$clear_if_existing = (bool) apply_filters(
 				'Typesense_clear_index_if_existing',
 				$clear_if_existing,
@@ -469,7 +470,7 @@ abstract class Typesense_Index {
 			 * This means that to override, or go back to default settings you have to
 			 * clear the index and re-index again or use the
 			 * 'Typesense_force_settings_update' filter to force a settings update.
-			 */
+			 
 			if ( false === $force_settings_update ) {
 				return;
 			}
@@ -477,7 +478,7 @@ abstract class Typesense_Index {
 
 		$this->push_settings();
 	}
-
+*/
 	/**
 	 * Push settings.
 	 *
@@ -619,6 +620,7 @@ abstract class Typesense_Index {
 	 */
 	abstract public function get_id();
 
+	abstract public function create_collection_if_not_existing();
 	/**
 	 * Get items.
 	 *

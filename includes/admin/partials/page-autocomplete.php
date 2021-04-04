@@ -16,7 +16,7 @@
 		<?php
 		settings_fields( $this->option_group );
 		do_settings_sections( $this->slug );
+		submit_button();
 		?>
-		<button type="button" class="typesense-reindex-button button button-primary" ><?php esc_html_e( 'Re-index', 'wp-search-with-algolia' ); ?></button>
 	</form>
 </div>
