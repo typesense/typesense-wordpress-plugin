@@ -5,7 +5,6 @@
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
  *
- * @version 1.7.0
  * @package WebDevStudios\WPSWA
  */
 
@@ -175,7 +174,11 @@
 				} );
 
 			/* Force the dropdown to be re-drawn on scroll to handle fixed containers. */
+<<<<<<< HEAD
 			jQuery( window ).on( 'scroll', function() {
+=======
+			jQuery( window ).scroll( function () {
+>>>>>>> 166b5f2155c2ca82bc753bc9391d1a3f95402c15
 				if ( autocomplete.autocomplete.getWrapper().style.display === "block" ) {
 					autocomplete.autocomplete.close();
 					autocomplete.autocomplete.open();

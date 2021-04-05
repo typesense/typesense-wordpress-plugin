@@ -36,6 +36,15 @@
 
 		$.post(
 			ajaxurl, data, function(response) {
+<<<<<<< HEAD
+=======
+				if (typeof response.success === 'undefined') {
+					alert( 'An error occurred' );
+					enableButton( $clickedButton );
+					return;
+				}
+
+>>>>>>> 166b5f2155c2ca82bc753bc9391d1a3f95402c15
 				alert( 'Settings correctly pushed for index: ' + index );
 				enableButton( $clickedButton );
 			}
