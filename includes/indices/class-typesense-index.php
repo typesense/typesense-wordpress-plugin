@@ -644,7 +644,12 @@ abstract class Typesense_Index {
 			  return;
 		  }
 		  */
-		  $this->client->collections->create($postsSchema);
+		  try{
+		  	$this->client->collections->create($postsSchema);
+		  }
+		  catch(Exception $e){
+			  return;
+		  }
 	}
 	/**
 	 * Get items.
