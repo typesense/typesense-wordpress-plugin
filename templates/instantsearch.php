@@ -73,13 +73,8 @@ get_header();
 					},
 					searchParameters: {
 						facetingAfterDistinct: true,
-<<<<<<< HEAD
 						highlightPreTag: '__ais-highlight__',
 						highlightPostTag: '__/ais-highlight__'
-=======
-			highlightPreTag: '__ais-highlight__',
-			highlightPostTag: '__/ais-highlight__'
->>>>>>> 166b5f2155c2ca82bc753bc9391d1a3f95402c15
 					}
 				});
 
@@ -196,11 +191,7 @@ get_header();
 				/* Start */
 				search.start();
 
-<<<<<<< HEAD
 				jQuery( '#algolia-search-box input' ).attr( 'type', 'search' ).trigger( 'select' );
-=======
-				jQuery('#algolia-search-box input').attr('type', 'search').select();
->>>>>>> 166b5f2155c2ca82bc753bc9391d1a3f95402c15
 			}
 		});
 	</script>
