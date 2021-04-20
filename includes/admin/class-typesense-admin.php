@@ -221,7 +221,7 @@ class Typesense_Admin {
 					continue;
 				}
 			}
-			throw new RuntimeException('All records indexed yes'.gettype($index_id));
+			throw new RuntimeException('All records indexed');
 		}
 		catch(Exception $e){
 			echo $e->getMessage();
