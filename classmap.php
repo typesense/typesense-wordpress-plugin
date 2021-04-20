@@ -20,6 +20,7 @@ require_once TYPESENSE_PATH . 'includes/factories/class-typesense-plugin-factory
 
 require_once TYPESENSE_PATH . 'includes/indices/class-typesense-index.php';
 require_once TYPESENSE_PATH . 'includes/indices/class-typesense-posts-index.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-terms-index.php';
 
 require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-changes-watcher.php';
 require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-post-changes-watcher.php';

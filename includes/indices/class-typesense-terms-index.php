@@ -1,6 +1,6 @@
 <?php
 /**
- * Algolia_Terms_Index class file.
+ * Typesense_Terms_Index class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,11 +9,11 @@
  */
 
 /**
- * Class Algolia_Terms_Index
+ * Class Typesense_Terms_Index
  *
  * @since 1.0.0
  */
-final class Algolia_Terms_Index extends Algolia_Index {
+final class Typesense_Terms_Index extends Typesense_Index {
 
 	/**
 	 * What this index contains.
@@ -36,7 +36,7 @@ final class Algolia_Terms_Index extends Algolia_Index {
 	private $taxonomy;
 
 	/**
-	 * Algolia_Terms_Index constructor.
+	 * Typesense_Terms_Index constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -90,10 +90,10 @@ final class Algolia_Terms_Index extends Algolia_Index {
 	 */
 	protected function get_records( $item ) {
 		$record                = array();
-		$record['objectID']    = $item->term_id;
-		$record['term_id']     = $item->term_id;
+		$record['term_id']     = (string)$item->term_id;
+		$record['id']     = (string)$item->term_id;
 		$record['taxonomy']    = $item->taxonomy;
-		$record['name']        = html_entity_decode( $item->name );
+		$record['name']        = (string)( $item->name );
 		$record['description'] = $item->description;
 		$record['slug']        = $item->slug;
 		$record['posts_count'] = (int) $item->count;
@@ -102,11 +102,10 @@ final class Algolia_Terms_Index extends Algolia_Index {
 		} else {
 			$record['permalink'] = get_term_link( $item );
 		}
+		//$record = (array) apply_filters( 'algolia_term_record', $record, $item );
+		//$record = (array) apply_filters( 'algolia_term_' . $item->taxonomy . '_record', $record, $item );
 
-		$record = (array) apply_filters( 'algolia_term_record', $record, $item );
-		$record = (array) apply_filters( 'algolia_term_' . $item->taxonomy . '_record', $record, $item );
-
-		return array( $record );
+		return ( $record );
 	}
 
 	/**
@@ -144,6 +143,10 @@ final class Algolia_Terms_Index extends Algolia_Index {
 		$settings = (array) apply_filters( 'algolia_terms_' . $this->taxonomy . '_index_settings', $settings );
 
 		return $settings;
+	}
+
+	public function update_records($post, $records){
+		parent::update_term_records( $post, $records );
 	}
 
 	/**

@@ -132,8 +132,8 @@ class Typesense_Plugin {
 		$this->settings      = new Typesense_Settings();
 		$this->api           = new Typesense_API( $this->settings );
 		//$this->compatibility = new Typesense_Compatibility();
-		//$this->styles        = new Typesense_Styles();
-		//$this->scripts       = new Typesense_Scripts();
+		$this->scripts       = new Typesense_Scripts();
+		$this->styles        = new Typesense_Styles();
 		add_action( 'init', array( $this, 'load' ), 20 );
 	}
 
@@ -150,6 +150,7 @@ class Typesense_Plugin {
 			//$this->autocomplete_config = new Typesense_Autocomplete_Config( $this );
 			//$this->template_loader     = new Typesense_Template_Loader( $this );
 		}
+		$this->template_loader     = new Typesense_Template_Loader( $this );
 		$this->autocomplete_config = new Typesense_Autocomplete_Config( $this );
 		$this->load_indices();
 		// Load admin or public part of the plugin.
@@ -261,6 +262,7 @@ class Typesense_Plugin {
 		$this->indices=array();
 		$this->indices[] = new Typesense_Posts_Index('post');
 
+		$this->indices[1] = new Typesense_Terms_Index( 'category' );
 		// Add a searchable posts index.
 		/*
 		$searchable_post_types = get_post_types(
@@ -286,18 +288,18 @@ class Typesense_Plugin {
 
 		// Add one terms index per taxonomy.
 		$taxonomies          = get_taxonomies();
-		$excluded_taxonomies = $this->settings->get_excluded_taxonomies();
+		//$excluded_taxonomies = $this->settings->get_excluded_taxonomies();
 		foreach ( $taxonomies as $taxonomy ) {
 			// Skip excluded taxonomies.
-			if ( in_array( $taxonomy, $excluded_taxonomies, true ) ) {
-				continue;
-			}
+			//if ( in_array( $taxonomy, $excluded_taxonomies, true ) ) {
+			//	continue;
+			//}
 
 			$this->indices[] = new Typesense_Terms_Index( $taxonomy );
 		}
 
 		// Add the users index.
-		$this->indices[] = new Typesense_Users_Index();
+		/*$this->indices[] = new Typesense_Users_Index();
 
 		// Allow developers to filter the indices.
 		$this->indices = (array) apply_filters( 'typesense_indices', $this->indices );
@@ -307,7 +309,9 @@ class Typesense_Plugin {
 		$this->indices[0]->set_client( $client);
 		$this->changes_watchers=array();
 		$this->changes_watchers[] = new Typesense_Post_Changes_Watcher( $this->indices[0] );
-/*'
+
+		$this->indices[1]->set_client( $client);
+		/*'
 			if ( in_array( $index->get_id(), $synced_indices_ids, true ) ) {
 				$index->set_enabled( true );
 

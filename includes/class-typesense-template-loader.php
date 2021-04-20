@@ -1,6 +1,6 @@
 <?php
 /**
- * Algolia_Template_Loader class file.
+ * Typesense_Template_Loader class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,35 +9,35 @@
  */
 
 /**
- * Class Algolia_Template_Loader
+ * Class Typesense_Template_Loader
  *
  * @since 1.0.0
  */
-class Algolia_Template_Loader {
+class Typesense_Template_Loader {
 
 	/**
-	 * The Algolia Plugin.
+	 * The Typesense Plugin.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @var Algolia_Plugin
+	 * @var Typesense_Plugin
 	 */
 	private $plugin;
 
 	/**
-	 * Algolia_Template_Loader constructor.
+	 * Typesense_Template_Loader constructor.
 	 *
 	 * @author  WebDevStudios <contact@webdevstudios.com>
 	 * @since   1.0.0
 	 *
-	 * @param Algolia_Plugin $plugin The Algolia Plugin.
+	 * @param Typesense_Plugin $plugin The Typesense Plugin.
 	 */
-	public function __construct( Algolia_Plugin $plugin ) {
+	public function __construct( Typesense_Plugin $plugin ) {
 		$this->plugin = $plugin;
 
-		$in_footer = Algolia_Utils::get_scripts_in_footer_argument();
+		$in_footer = Typesense_Utils::get_scripts_in_footer_argument();
 
-		// Inject Algolia configuration in a JavaScript variable.
+		// Inject Typesense configuration in a JavaScript variable.
 		if ( true === $in_footer ) {
 			add_filter(
 				'wp_footer',
@@ -54,6 +54,7 @@ class Algolia_Template_Loader {
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 
 		// Load autocomplete.js search experience if its enabled.
+		/*
 		if ( $this->should_load_autocomplete() ) {
 			add_filter( 'wp_enqueue_scripts', array( $this, 'enqueue_autocomplete_scripts' ) );
 
@@ -63,6 +64,7 @@ class Algolia_Template_Loader {
 				add_filter( 'wp_head', array( $this, 'load_autocomplete_template' ) );
 			}
 		}
+		*/
 	}
 
 	/**
@@ -76,30 +78,32 @@ class Algolia_Template_Loader {
 		$autocomplete_config = $this->plugin->get_autocomplete_config();
 
 		$config = array(
-			'debug'              => defined( 'WP_DEBUG' ) && WP_DEBUG,
-			'application_id'     => $settings->get_application_id(),
-			'search_api_key'     => $settings->get_search_api_key(),
-			'powered_by_enabled' => $settings->is_powered_by_enabled(),
+			//'debug'              => defined( 'WP_DEBUG' ) && WP_DEBUG,
+			//'application_id'     => $settings->get_application_id(),
+			'api_key'     => $settings->get_api_key(),
+			'port'     => $settings->get_port(),
+			'host'     => $settings->get_host(),
+			//'powered_by_enabled' => $this->settings->is_powered_by_enabled(),
 			'query'              => get_search_query(),
-			'autocomplete'       => array(
-				'sources'        => $autocomplete_config->get_config(),
-				'input_selector' => (string) apply_filters( 'algolia_autocomplete_input_selector', "input[name='s']:not('.no-autocomplete')" ),
-			),
+			//'autocomplete'       => array(
+			//	'sources'        => $autocomplete_config->get_config(),
+			//	'input_selector' => (string) apply_filters( 'algolia_autocomplete_input_selector', "input[name='s']:not('.no-autocomplete')" ),
+			//),
 			'indices'            => array(),
 		);
 
 		// Inject all the indices into the config to ease instantsearch.js integrations.
 		$indices = $this->plugin->get_indices(
-			array(
-				'enabled' => true,
-			)
+			//array(
+			//	'enabled' => true,
+			//)
 		);
-		foreach ( $indices as $index ) {
-			$config['indices'][ $index->get_id() ] = $index->to_array();
-		}
+		//foreach ( $indices as $index ) {
+		//	$config['indices'][ $index->get_id() ] = $index->to_array();
+		//}
 
 		// Give developers a last chance to alter the configuration.
-		$config = (array) apply_filters( 'algolia_config', $config );
+		//$config = (array) apply_filters( 'algolia_config', $config );
 
 		echo '<script type="text/javascript">var algolia = ' . wp_json_encode( $config ) . ';</script>';
 	}
@@ -130,7 +134,7 @@ class Algolia_Template_Loader {
 	}
 
 	/**
-	 * Enqueue Algolia autocomplete.js scripts.
+	 * Enqueue Typesense autocomplete.js scripts.
 	 *
 	 * @author  WebDevStudios <contact@webdevstudios.com>
 	 * @since   1.0.0
@@ -167,8 +171,8 @@ class Algolia_Template_Loader {
 	 * @return string
 	 */
 	public function template_loader( $template ) {
-		$settings = $this->plugin->get_settings();
-		if ( is_search() && $settings->should_override_search_with_instantsearch() ) {
+		//$settings = $this->plugin->get_settings();
+		if ( is_search() /*&& $settings->should_override_search_with_instantsearch()*/ ) {
 
 			return $this->load_instantsearch_template();
 		}
@@ -188,17 +192,24 @@ class Algolia_Template_Loader {
 		add_action(
 			'wp_enqueue_scripts', function () {
 				// Enqueue the instantsearch.js default styles.
-				wp_enqueue_style( 'algolia-instantsearch' );
-
+				wp_enqueue_style( 'algolia-instantsearch-native' );
+				//wp_enqueue_style( 'algolia-instantsearch' );
 				// Enqueue the instantsearch.js library.
 				wp_enqueue_script( 'algolia-instantsearch' );
 
+				//wp_enqueue_script( 'typesense-js' );
+				//wp_enqueue_script( 'typesense-min-js' );
+				//wp_enqueue_script( 'typesense-min-js-map' );
+
+				wp_enqueue_script( 'typesense-adapter' );
+				//wp_enqueue_script( 'typesense-adapter-map' );
+
 				// Allow users to easily enqueue custom styles and scripts.
-				do_action( 'algolia_instantsearch_scripts' );
+				//do_action( 'algolia_instantsearch_scripts' );
 			}
 		);
 
-		return $this->locate_template( 'instantsearch.php' );
+		return TYPESENSE_PATH . 'templates/instantsearch.php';
 	}
 
 	/**
@@ -208,7 +219,8 @@ class Algolia_Template_Loader {
 	 * @since   1.0.0
 	 */
 	public function load_autocomplete_template() {
-		require $this->locate_template( 'autocomplete.php' );
+		require TYPESENSE_PATH.'templates/autocomplete.php';
+		//$this->locate_template( 'autocomplete.php' );
 	}
 
 	/**

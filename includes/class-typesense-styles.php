@@ -13,7 +13,7 @@
  *
  * @since 1.5.0
  */
-class Algolia_Styles {
+class Typesense_Styles {
 
 	/**
 	 * Algolia_Styles constructor.
@@ -35,16 +35,23 @@ class Algolia_Styles {
 
 		wp_register_style(
 			'algolia-autocomplete',
-			ALGOLIA_PLUGIN_URL . 'css/algolia-autocomplete.css',
+			TYPESENSE_PLUGIN_URL . 'css/algolia-autocomplete.css',
 			[],
-			ALGOLIA_VERSION
+			TYPESENSE_VERSION
+		);
+
+		wp_register_style(
+			'algolia-instantsearch-native',
+			TYPESENSE_PLUGIN_URL . 'css/algolia-instantsearch.css',
+			[],
+			TYPESENSE_VERSION
 		);
 
 		wp_register_style(
 			'algolia-instantsearch',
-			ALGOLIA_PLUGIN_URL . 'css/algolia-instantsearch.css',
+			'https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css',
 			[],
-			ALGOLIA_VERSION
+			TYPESENSE_VERSION
 		);
 	}
 }
