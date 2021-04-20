@@ -102,8 +102,6 @@ final class Typesense_Terms_Index extends Typesense_Index {
 		} else {
 			$record['permalink'] = get_term_link( $item );
 		}
-		//$record = (array) apply_filters( 'algolia_term_record', $record, $item );
-		//$record = (array) apply_filters( 'algolia_term_' . $item->taxonomy . '_record', $record, $item );
 
 		return ( $record );
 	}

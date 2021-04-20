@@ -173,41 +173,6 @@ abstract class Typesense_Index {
 	final public function search( $query, $args = null, $order_by = null, $order = 'desc' ) {
 		return $this->get_collection()->search( $query, $args );
 	}
-/*
-
-	/**
-	 * Get replica.
-	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
-	 *
-	 * @param string $attribute_name The attribute name.
-	 * @param string $order          The order.
-	 *
-	 * @return Typesense_Index_Replica
-	 *
-	 * @throws RuntimeException If the replica can't be found.
-	 */
-/*
-	private function get_replica( $attribute_name, $order ) {
-		$replicas = $this->get_replicas();
-		/**
-		 * Loop over the replicas.
-		 *
-		 * @author WebDevStudios <contact@webdevstudios.com>
-		 * @since  1.0.0
-		 *
-		 * @var Typesense_Index_Replica $replica
-		 */
-/*
-		foreach ( $replicas as $replica ) {
-			if ( $replica->get_attribute_name() === $attribute_name && $replica->get_order() === $order ) {
-				return $replica;
-			}
-		}
-
-		throw new RuntimeException( sprintf( 'Unable to find replica for attribute "%s" with order "%s".', $attribute_name, $order ) );
-	}
 
 	/**
 	 * Set enabled.
@@ -256,34 +221,15 @@ abstract class Typesense_Index {
 	 * @return void
 	 */
 	public function sync( $post ) {
-	//	$this->assert_is_supported( $item );
-	//	if ( $this->should_index( $item ) ) {
-			//do_action( 'Typesense_before_get_records', $item );
-			$this->create_collection_if_not_existing();
-			$records = $this->get_records( $post );
-			//do_action( 'Typesense_after_get_records', $item );
-			/*$content = $post->post_content;
-			$shared_attributes                        = array();
-			$shared_attributes['post_id']             = (string)$post->ID;
-			$shared_attributes['post_excerpt']        = apply_filters( 'the_excerpt', $post->post_excerpt ); // phpcs:ignore -- Legitimate use of Core hook.
-			$shared_attributes['post_title']          = $post->post_title;
-			$shared_attributes['comment_count']       = (int) $post->comment_count;
-			$shared_attributes['post_content'] = apply_filters( 'the_content', $content );
-			$shared_attributes['id']     = '3000';
-			$shared_attributes['post_date']           = (string)get_post_time( 'U', false, $post );
-			$shared_attributes['post_modified']       = (string)get_post_modified_time( 'U', false, $post );
-			$shared_attributes['is_sticky'] = is_sticky( $post->ID ) ? 1 : 0;*/
-			try{
-				//throw new RuntimeException('Dummy23');
-				$this->update_records( $post, $records );	
-			}			
-			catch(Exception $e){
-				throw $e;
-			}
-			return;
-	//	}
-
-		//$this->delete_item( $item );
+		$this->create_collection_if_not_existing();
+		$records = $this->get_records( $post );
+		try{
+			$this->update_records( $post, $records );	
+		}			
+		catch(Exception $e){
+			throw $e;
+		}
+		return;
 	}
 
 	/**
@@ -322,19 +268,11 @@ abstract class Typesense_Index {
 	 * @return void
 	 */
 	public function update_post_records( $item, $records) {
-		/*if ( empty( $records ) ) {
-			$this->delete_item( $item );
-			return;
-		}
-		*/
 		try{
-			//throw new RuntimeException('Dummy12345');
-			//$collection  = $this->get_collection();
-			//$records = $this->sanitize_json_data( $records );
 			$this->client->collections['posts']->documents->create($records);
 		}
 		catch(Exception $e){
-			//throw $e;
+			//Ignore error;
 		}
 		try{
 			$this->client->collections['posts']->documents[$records['id']]->update($records);
@@ -345,19 +283,11 @@ abstract class Typesense_Index {
 	}
 
 	public function update_term_records( $item, $records) {
-		/*if ( empty( $records ) ) {
-			$this->delete_item( $item );
-			return;
-		}
-		*/
 		try{
-			//throw new RuntimeException('Dummy12345');
-			//$collection  = $this->get_collection();
-			//$records = $this->sanitize_json_data( $records );
 			$this->client->collections['terms']->documents->create($records);
 		}
 		catch(Exception $e){
-			//throw $e;
+			//Ignore error;
 		}
 		try{
 			$this->client->collections['terms']->documents[$records['id']]->update($records);
@@ -394,67 +324,6 @@ abstract class Typesense_Index {
 	}
 
 	/**
-	 * Re index.
-	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
-	 *
-	 * @param int $page Page of the index.
-	 *
-	 * @throws InvalidArgumentException If the page is less than 1.
-	 */
-	public function re_index( $page ) {
-		/*$page = (int) $page;
-
-		if ( $page < 1 ) {
-			throw new InvalidArgumentException( 'Page should be superior to 0.' );
-		}
-
-		if ( 1 === $page ) {
-			$this->create_index_if_not_existing();
-		}
-
-		$batch_size = (int) $this->get_re_index_batch_size();
-		if ( $batch_size < 1 ) {
-			throw new InvalidArgumentException( 'Re-index batch size can not be lower than 1.' );
-		}
-
-		$items_count = $this->get_re_index_items_count();
-
-		$max_num_pages = (int) max( ceil( $items_count / $batch_size ), 1 );
-
-		$items = $this->get_items( $page, $batch_size );
-
-		$records = array();
-		foreach ( $items as $item ) {
-			if ( ! $this->should_index( $item ) ) {
-				$this->delete_item( $item );
-				continue;
-			}
-
-			do_action( 'Typesense_before_get_records', $item );
-			$item_records = $this->get_records( $item );
-			$records      = array_merge( $records, $item_records );
-			do_action( 'Typesense_after_get_records', $item );
-
-			$this->update_records( $item, $item_records );
-		}
-
-		if ( ! empty( $records ) ) {
-			$index = $this->get_index();
-
-			$records = $this->sanitize_json_data( $records );
-
-			$index->saveObjects( $records );
-		}
-
-		if ( $page === $max_num_pages ) {
-			do_action( 'Typesense_re_indexed_items', $this->get_id() );
-		}*/
-
-	}
-
-	/**
 	 * Create index if it doesn't exist.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
@@ -462,53 +331,6 @@ abstract class Typesense_Index {
 	 *
 	 * @param bool $clear_if_existing Whether to clear an existing index or not.
 	 */
-/*	public function create_index_if_not_existing( $clear_if_existing = true ) {
-		$index = $this->get_index();
-
-		try {
-			$index->getSettings();
-			$index_exists = true;
-		} catch ( TypesenseException $exception ) {
-			$index_exists = false;
-		}
-
-		if ( true === $index_exists ) {
-
-			/**
-			 * Allow developers to skip clearing the index.
-			 *
-			 * @since 1.3.0
-			 *
-			 * @param bool   $clear_if_existing Whether to clear the existing index or not.
-			 * @param string $index_id          The index ID without prefix.
-			 
-			$clear_if_existing = (bool) apply_filters(
-				'Typesense_clear_index_if_existing',
-				$clear_if_existing,
-				$this->get_id()
-			);
-
-			if ( true === $clear_if_existing ) {
-				$index->clearObjects();
-			}
-
-			$force_settings_update = (bool) apply_filters( 'Typesense_should_force_settings_update', false, $this->get_id() );
-
-			/*
-			 * No need to go further in this case.
-			 * We don't change anything when the index already exists.
-			 * This means that to override, or go back to default settings you have to
-			 * clear the index and re-index again or use the
-			 * 'Typesense_force_settings_update' filter to force a settings update.
-			 
-			if ( false === $force_settings_update ) {
-				return;
-			}
-		}
-
-		$this->push_settings();
-	}
-*/
 	/**
 	 * Push settings.
 	 *
@@ -734,115 +556,6 @@ abstract class Typesense_Index {
 	}
 
 	/**
-	 * To array method.
-	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
-	 *
-	 * @return array
-	 */
-/*
-	public function to_array() {
-		$replicas = $this->get_replicas();
-
-		$items = array();
-		foreach ( $replicas as $replica ) {
-			$items[] = array(
-				'name' => $replica->get_replica_index_name( $this ),
-			);
-		}
-
-		return array(
-			'name'     => $this->get_name(),
-			'id'       => $this->get_id(),
-			'enabled'  => $this->enabled,
-			'replicas' => $items,
-		);
-	}
-
-	/**
-	 * Get replicas.
-	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
-	 *
-	 * @return array
-	 */
-/*
-	public function get_replicas() {
-		$replicas = (array) apply_filters( 'Typesense_index_replicas', array(), $this );
-		$replicas = (array) apply_filters( 'Typesense_' . $this->get_id() . '_index_replicas', $replicas, $this );
-
-		$filtered = array();
-		// Filter out invalid inputs.
-		foreach ( $replicas as $replica ) {
-			if ( ! $replica instanceof Typesense_Index_Replica ) {
-				continue;
-			}
-			$filtered[] = $replica;
-		}
-
-		return $filtered;
-	}
-
-	/**
-	 * Sync replicas.
-	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
-	 */
-/*
-	private function sync_replicas() {
-		$replicas = $this->get_replicas();
-		if ( empty( $replicas ) ) {
-			// No need to go further if there are no replicas!
-			return;
-		}
-
-		$replica_index_names = array();
-*/
-		/**
-		 * Loop over the replicas.
-		 *
-		 * @author WebDevStudios <contact@webdevstudios.com>
-		 * @since  1.0.0
-		 *
-		 * @var Typesense_Index_Replica $replica
-		 */
-/*
-		 foreach ( $replicas as $replica ) {
-			$replica_index_names[] = $replica->get_replica_index_name( $this );
-		}
-
-		$this->get_index()->setSettings(
-			array(
-				'replicas' => $replica_index_names,
-			)
-		);
-
-		$client = $this->get_client();
-
-		// Ensure we re-push the master index settings each time.
-		$settings = $this->get_settings();
-
-		/**
-		 * Loop over the replicas.
-		 *
-		 * @author WebDevStudios <contact@webdevstudios.com>
-		 * @since  1.0.0
-		 *
-		 * @var Typesense_Index_Replica $replica
-		 */
-/*
-		foreach ( $replicas as $replica ) {
-			$settings['ranking'] = $replica->get_ranking();
-			$replica_index_name  = $replica->get_replica_index_name( $this );
-			$index               = $client->initIndex( $replica_index_name );
-			$index->setSettings( $settings );
-		}
-	}
-
-	/**
 	 * Delete item.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
@@ -853,25 +566,9 @@ abstract class Typesense_Index {
 	//abstract public function delete_item( $item );
 
 	public function delete_item( $post ) {
-		//$this->assert_is_supported( $item );
-/*
-		$records_count = $this->get_post_records_count( $item->ID );
-		$object_ids    = array();
-		for ( $i = 0; $i < $records_count; $i++ ) {
-			$object_ids[] = $this->get_post_object_id( $item->ID, $i );
-		}
-
-		if ( ! empty( $object_ids ) ) {
-			$this->get_index()->deleteObjects( $object_ids );
-		}
-*/
 		try{
-			//throw new RuntimeException('Dummy12345');
-			//$collection  = $this->get_collection();
-			//$records = $this->sanitize_json_data( $records );
 			$key = (string)$post->ID;
 			$this->client->collections['posts']->documents[$key]->delete();
-			//throw new RuntimeException($key);
 		}
 		catch(Exception $e){
 			throw $e;

@@ -61,17 +61,12 @@ class Typesense_Post_Changes_Watcher implements Typesense_Changes_Watcher {
 
 		// Fires before a post is deleted, at the start of wp_delete_post().
 		// At this stage the post metas are still available, and we need them.
-		//add_action( 'before_delete_post', array( $this, 'delete_item' ) );
+		add_action( 'before_delete_post', array( $this, 'delete_item' ) );
 
 		// Handle meta changes after the change occurred.
 		//add_action( 'added_post_meta', array( $this, 'on_meta_change' ), 10, 4 );
 		//add_action( 'updated_post_meta', array( $this, 'on_meta_change' ), 10, 4 );
 		//add_action( 'deleted_post_meta', array( $this, 'on_meta_change' ), 10, 4 );
-
-		// Handle attachment changes. These are required because the other post hooks are not triggered.
-		//add_action( 'add_attachment', array( $this, 'sync_item' ) );
-		//add_action( 'attachment_updated', array( $this, 'sync_item' ) );
-		//add_action( 'delete_attachment', array( $this, 'delete_item' ) );
 	}
 
 	/**
@@ -85,19 +80,6 @@ class Typesense_Post_Changes_Watcher implements Typesense_Changes_Watcher {
 	 * @return void
 	 */
 	public function sync_item( $post_id ) {
-/*
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return;
-		}
-
-		if ( in_array( $post_id, $this->posts_deleted, true ) ) {
-			return;
-		}
-*/
-/*		if ( ! $post || ! $this->index->supports( $post ) ) {
-			return;
-		}
-*/
 		$document = [
 			'post_id' => '1',
 			'id' => '3',
@@ -115,9 +97,7 @@ class Typesense_Post_Changes_Watcher implements Typesense_Changes_Watcher {
 		];
 		try {
 			$post = get_post( (int) $post_id );
-			//error_log('egwerhwnrum');
 			$this->index->sync( $post );
-			//throw new RuntimeException($post->post_title);
 		} catch ( Exception $exception ) {
 			error_log( $exception->getMessage() ); // phpcs:ignore -- Legacy.
 		}
@@ -136,14 +116,10 @@ class Typesense_Post_Changes_Watcher implements Typesense_Changes_Watcher {
 	public function delete_item( $post_id ) {
 
 		$post = get_post( (int) $post_id );
-		if ( ! $post || ! $this->index->supports( $post ) ) {
-			return;
-		}
 
 		try {
 			$this->index->delete_item( $post );
-			$this->posts_deleted[] = $post->ID;
-		} catch ( TypesenseException $exception ) {
+		} catch ( Exception $exception ) {
 			error_log( $exception->getMessage() ); // phpcs:ignore -- Legacy.
 		}
 	}

@@ -155,42 +155,13 @@ class Typesense_Posts_Index  extends Typesense_Index{
 	 */
 	private function get_post_records(  $post ) {
 		$shared_attributes = $this->get_post_shared_attributes( $post );
-
-		//$removed = remove_filter( 'the_content', 'wptexturize', 10 );
-
-		//$post_content = apply_filters( 'algolia_post_content', $post->post_content, $post );
 		$content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore -- Legitimate use of Core hook.
 		$shared_attributes['post_content'] = strip_tags($content);
-		/*
-		if ( true === $removed ) {
-			add_filter( 'the_content', 'wptexturize', 10 );
-		}
-
-		$post_content = Typesense_Utils::prepare_content( $post_content );
-		$parts        = Typesense_Utils::explode_content( $post_content );
-
-		if ( defined( 'ALGOLIA_SPLIT_POSTS' ) && false === ALGOLIA_SPLIT_POSTS ) {
-			$parts = array( array_shift( $parts ) );
-		}
-*/
 		$records = array();
 
-		//foreach ( $parts as $i => $part ) {
-			$records                 = $shared_attributes;
-			$records['id']     = (string)$post->ID;
-			/*$id = get_option('typesense_post_count');
-			$records['id']     = (string)($id+1);//$this->get_post_object_id( $post->ID,  );
-			update_option('typesense_post_count',$id+1);*/
-			//$record['content']      = $part;
-			//$record['record_index'] = $i;
-			//$records[]              = $record;
-		//}
-
-		//$records = (array) apply_filters( 'algolia_post_records', $records, $post );
-		//$records = (array) apply_filters( 'algolia_post_' . $post->post_type . '_records', $records, $post );
-
+		$records                 = $shared_attributes;
+		$records['id']     = (string)$post->ID;
 		return $records;
-		//return $shared_attributes;
 	}
 
 	function prefix_console_log_message( $message ) {
@@ -224,79 +195,11 @@ class Typesense_Posts_Index  extends Typesense_Index{
 
 		$val = (wp_list_pluck(wp_get_object_terms($post->ID,'category'),'name'));
 		$shared_attributes['category'] = (string)$val[0];
-		/*$taxonomy_objects = get_object_taxonomies( $post, 'objects' );
-		$i=1;
-		foreach ( $taxonomy_objects as $taxonomy ) {
-
-			$terms = wp_get_object_terms( $post->ID, $taxonomy->name );
-			//$terms = is_array( $terms ) ? $terms : array();
-
-
-			//$taxonomy_values = wp_list_pluck( $terms, 'name' );
-			$val = json_encode($terms);
-			if ( $i==2) {
-				$shared_attributes['category'] = (string)$val;
-			}
-			$i+=1;
-		}*/
-		//$val=get_object_taxonomies( $post->post_type,'objects' );
-		//$shared_attributes['category'] = (string)($val);
-
-		//$shared_attributes['category'] = 'diummy';
-		//$shared_attributes['menu_order']          = (int) $post->menu_order;
-/*
-		$author = get_userdata( $post->post_author );
-		if ( $author ) {
-			$shared_attributes['post_author'] = array(
-				'user_id'      => (int) $post->post_author,
-				'display_name' => $author->display_name,
-				'user_url'     => $author->user_url,
-				'user_login'   => $author->user_login,
-			);
-		}
-*/
-		//$shared_attributes['images'] = Typesense_Utils::get_post_images( $post->ID );
-
+		
 		$shared_attributes['permalink']      = get_permalink( $post );
-		//$shared_attributes['post_mime_type'] = $post->post_mime_type;
-
-		// Push all taxonomies by default, including custom ones.
-		//$taxonomy_objects = get_object_taxonomies( $post->post_type, 'objects' );
-
-		//$shared_attributes['taxonomies']              = array();
-		//$shared_attributes['taxonomies_hierarchical'] = array();
-/*		foreach ( $taxonomy_objects as $taxonomy ) {
-
-			$terms = wp_get_object_terms( $post->ID, $taxonomy->name );
-			$terms = is_array( $terms ) ? $terms : array();
-
-			if ( $taxonomy->hierarchical ) {
-				$hierarchical_taxonomy_values = Typesense_Utils::get_taxonomy_tree( $terms, $taxonomy->name );
-				if ( ! empty( $hierarchical_taxonomy_values ) ) {
-					$shared_attributes['taxonomies_hierarchical'][ $taxonomy->name ] = $hierarchical_taxonomy_values;
-				}
-			}
-
-			$taxonomy_values = wp_list_pluck( $terms, 'name' );
-			if ( ! empty( $taxonomy_values ) ) {
-				$shared_attributes['taxonomies'][ $taxonomy->name ] = $taxonomy_values;
-			}
-		}
-*/
+		
 		$shared_attributes['is_sticky'] = is_sticky( $post->ID ) ? 1 : 0;
-/*
-		if ( 'attachment' === $post->post_type ) {
-			$shared_attributes['alt'] = get_post_meta( $post->ID, '_wp_attachment_image_alt', true );
 
-			$metadata = get_post_meta( $post->ID, '_wp_attachment_metadata', true );
-			$metadata = (array) apply_filters( 'wp_get_attachment_metadata', $metadata, $post->ID ); // phpcs:ignore -- Legitimate use of Core hook.
-
-			$shared_attributes['metadata'] = $metadata;
-		}
-
-		$shared_attributes = (array) apply_filters( 'algolia_post_shared_attributes', $shared_attributes, $post );
-		$shared_attributes = (array) apply_filters( 'algolia_post_' . $post->post_type . '_shared_attributes', $shared_attributes, $post );
-*/
 		return $shared_attributes;
 	}
 
@@ -387,21 +290,6 @@ class Typesense_Posts_Index  extends Typesense_Index{
 		$id = '1';
 		return $id;
 	}
-
-	/**
-	 * Update records.
-	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
-	 *
-	 * @param mixed $item    The item to update records for.
-	 * @param array $records The records.
-	 */
-	/*
-	 protected function update_records( $item, array $records ) {
-		$this->update_post_records( $item, $records );
-	}
-	*/
 	/**
 	 * Update post records.
 	 *
@@ -412,20 +300,7 @@ class Typesense_Posts_Index  extends Typesense_Index{
 	 * @param array   $records The records.
 	 */
 	public function update_records( WP_Post $post, array $records ) {
-		// If there are no records, parent `update_records` will take care of the deletion.
-		// In case of posts, we ALWAYS need to delete existing records.
-		//if ( ! empty( $records ) ) {
-		//	$this->delete_item( $post );
-		//}
-
 		parent::update_post_records( $post, $records );
-
-		// Keep track of the new record count for future updates relying on the objectID's naming convention .
-		//$new_records_count = count( $records );
-		//$this->set_post_records_count( $post, $new_records_count );
-
-		//do_action( 'algolia_posts_index_post_updated', $post, $records );
-		//do_action( 'algolia_posts_index_post_' . $post->post_type . '_updated', $post, $records );
 	}
 
 	/**
