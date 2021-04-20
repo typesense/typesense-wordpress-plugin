@@ -41,18 +41,10 @@ class Typesense_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		$api = $plugin->get_api();
-		//if ( $api->is_reachable() ) {
-			new Typesense_Admin_Page_Autocomplete( $plugin->get_settings(), $plugin->get_autocomplete_config());
-			new Typesense_Admin_Page_Native_Search( $plugin );
+		new Typesense_Admin_Page_Autocomplete( $plugin->get_settings(), $plugin->get_autocomplete_config());
+		new Typesense_Admin_Page_Native_Search( $plugin );
 
-			add_action( 'wp_ajax_typesense_re_index', array( $this, 're_index' ) );
-			add_action( 'wp_ajax_typesense_push_settings', array( $this, 'push_settings' ) );
-
-			//$maybe_get_page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
-			//if ( ! empty( $maybe_get_page ) && 'typesense' === substr( $maybe_get_page, 0, 7 ) ) {
-			//	add_action( 'admin_notices', array( $this, 'display_reindexing_notices' ) );
-			//}
-		//}
+		add_action( 'wp_ajax_typesense_re_index', array( $this, 're_index' ) );
 
 		new Typesense_Admin_Page_Settings( $plugin );
 
@@ -76,30 +68,6 @@ class Typesense_Admin {
 	 * @since   1.0.0
 	 */
 	public function enqueue_scripts() {
-		/*
-		wp_enqueue_script(
-			'typesense-admin',
-			plugin_dir_url( __FILE__ ) . 'js/typesense-admin.js',
-			array( 'jquery', 'jquery-ui-sortable' ),
-			TYPESENSE_VERSION,
-			false
-		);
-		wp_enqueue_script(
-			'typesense-admin-reindex-button',
-			plugin_dir_url( __FILE__ ) . 'js/reindex-button.js',
-			array( 'jquery' ),
-			TYPESENSE_VERSION,
-			false
-		);
-		/*
-		wp_enqueue_script(
-			'typesense-admin-push-settings-button',
-			plugin_dir_url( __FILE__ ) . 'js/push-settings-button.js',
-			array( 'jquery' ),
-			TYPESENSE_VERSION,
-			false
-		);
-		*/
 		wp_enqueue_script(
 			'typesense-admin-reindex-button',
 			plugin_dir_url( __FILE__ ) . 'js/reindex-button.js',
@@ -224,47 +192,8 @@ class Typesense_Admin {
 	 * @throws Exception If index ID or page are not provided, or index name dies not exist.
 	 */
 	public function re_index() {
-		
+				
 		$index_id = $_GET['index'];
- 		//$index_id = filter_input( INPUT_POST, 'index', FILTER_SANITIZE_STRING );
-		//$page     = filter_input( INPUT_POST, 'p', FILTER_SANITIZE_STRING );
-		//echo($index_id);
-/*
-		try {
-			if ( empty( $index_id ) ) {
-				throw new RuntimeException( 'Index ID should be provided.' );
-			}
-
-			if ( ! ctype_digit( $page ) ) {
-				throw new RuntimeException( 'Page should be provided.' );
-			}
-			$page = (int) $page;
-
-			$index = $this->plugin->get_index( $index_id );
-			if ( null === $index ) {
-				throw new RuntimeException( sprintf( 'Index named %s does not exist.', $index_id ) );
-			}
-
-			$total_pages = $index->get_re_index_max_num_pages();
-
-			ob_start();
-			if ( $page <= $total_pages || 0 === $total_pages ) {
-				$index->re_index( $page );
-			}
-			ob_end_clean();
-
-			$response = array(
-				'totalPagesCount' => $total_pages,
-				'finished'        => $page >= $total_pages,
-			);
-
-			wp_send_json( $response );
-		} catch ( Exception $exception ) {
-			echo esc_html( $exception->getMessage() );
-			throw $exception;
-		}
-		*/
-		//echo 'gfg';
 		$document = [
 			'post_id' => '1',
 			'id' => '500',
@@ -279,68 +208,23 @@ class Typesense_Admin {
 			'comment_count' => 2,	
 		];
 		$indices = $this->plugin->get_indices();
-		//$post_index = $indices[0];
-		//if(strcmp($index_id,"posts_post")==0){
-			try{
-				//$indices[0]->sync($document);
-				//$client = $this->plugin->get_api()->get_client();
-				//$client->collections['posts']->documents->create($document);
-				//echo gettype($this->plugin->get_api()->get_client());
-				//$client = $this->plugin->get_api()->get_client();
-				//$client->collections['posts']->documents->create($document);
-				$terms = get_terms(array(
-					'taxonomy' => 'category',
-					'hide_empty' => false
-				));
-				foreach($terms as $term){
-					try{
-						$indices[1]->sync($term);
-					}
-					catch(Exception $e){
-						continue;
-					}
+		try{
+			$terms = get_terms(array(
+				'taxonomy' => 'category',
+				'hide_empty' => false
+			));
+			foreach($terms as $term){
+				try{
+					$indices[1]->sync($term);
 				}
-				throw new RuntimeException('All records indexed yes'.gettype($index_id));
+				catch(Exception $e){
+					continue;
+				}
 			}
-			catch(Exception $e){
-				echo $e->getMessage();
-			}
-		//}
-	}
-
-	/**
-	 * Push settings.
-	 *
-	 * @author  WebDevStudios <contact@webdevstudios.com>
-	 * @since   1.0.0
-	 *
-	 * @throws RuntimeException If index_id is not provided or if the corresponding index is null.
-	 * @throws Exception If index_id is not provided or if the corresponding index is null.
-	 */
-	public function push_settings() {
-/*
-		$index_id = filter_input( INPUT_POST, 'index_id', FILTER_SANITIZE_STRING );
-
-		try {
-			if ( empty( $index_id ) ) {
-				throw new RuntimeException( 'index_id should be provided.' );
-			}
-
-			$index = $this->plugin->get_index( $index_id );
-			if ( null === $index ) {
-				throw new RuntimeException( sprintf( 'Index named %s does not exist.', $index_id ) );
-			}
-
-			$index->push_settings();
-
-			$response = array(
-				'success' => true,
-			);
-			wp_send_json( $response );
-		} catch ( Exception $exception ) {
-			echo esc_html( $exception->getMessage() );
-			throw $exception;
+			throw new RuntimeException('All records indexed yes'.gettype($index_id));
 		}
-*/
+		catch(Exception $e){
+			echo $e->getMessage();
+		}
 	}
 }

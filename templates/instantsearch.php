@@ -50,26 +50,6 @@ get_header();
 		jQuery(function() {
 			if(jQuery('#algolia-search-box').length > 0) {
 
-				//if (algolia.indices.searchable_posts === undefined && jQuery('.admin-bar').length > 0) {
-				//	alert('It looks like you haven\'t indexed the searchable posts index. Please head to the Indexing page of the Algolia Search plugin and index it.');
-				//}
-
-				/* Instantiate instantsearch.js */
-				/*var search = instantsearch({
-					appId: '156VMZYDR5',//algolia.application_id,
-					apiKey:'800f1a316a9f8af4cbb4ce3d486c8cf7', //algolia.search_api_key,
-					indexName: 'wp_dummysearchable_posts',
-					urlSync: {
-						mapping: {'q': 's'},
-						trackedParameters: ['query']
-					},
-					searchParameters: {
-						facetingAfterDistinct: true,
-						highlightPreTag: '__ais-highlight__',
-						highlightPostTag: '__/ais-highlight__'
-					}
-				});*/
-
 				const typesenseInstantsearchAdapter = new TypesenseInstantsearchAdapter({
 					server: {
 						apiKey: algolia.api_key, // Be sure to use the search-only-api-key
@@ -141,38 +121,6 @@ get_header();
 						container: '#algolia-stats'
 					})
 				);
-				/* Hits widget */
-				/*search.addWidget(
-					instantsearch.widgets.hits({
-						container: '#algolia-hits',
-						hitsPerPage: 10,
-						templates: {
-							empty: 'No results were found for "<strong>{{query}}</strong>".',
-							item: wp.template('instantsearch-hit')
-						},
-						transformData: {
-							item: function (hit) {
-
-								function replace_highlights_recursive (item) {
-								  if( item instanceof Object && item.hasOwnProperty('value')) {
-									  item.value = _.escape(item.value);
-									  item.value = item.value.replace(/__ais-highlight__/g, '<em>').replace(/__\/ais-highlight__/g, '</em>');
-								  } else {
-									  for (var key in item) {
-										  item[key] = replace_highlights_recursive(item[key]);
-									  }
-								  }
-								  return item;
-								}
-
-								hit._highlightResult = replace_highlights_recursive(hit._highlightResult);
-								hit._snippetResult = replace_highlights_recursive(hit._snippetResult);
-
-								return hit;
-							}
-						}
-					})
-				);*/
 
 				/* Pagination widget */
 				search.addWidget(
@@ -181,7 +129,7 @@ get_header();
 					})
 				);
 
-				/* Post types refinement widget */
+				/* Category menu widget */
 				search.addWidget(
 					instantsearch.widgets.menu({
 						container: '#facet-categories',
@@ -194,6 +142,7 @@ get_header();
 					})
 				);
 
+				/* Post types menu widget */
 				search.addWidget(
 					instantsearch.widgets.menu({
 						container: '#facet-post-types',
@@ -205,46 +154,6 @@ get_header();
 						},
 					})
 				);
-				/* Categories refinement widget */
-/*				search.addWidget(
-					instantsearch.widgets.hierarchicalMenu({
-						container: '#facet-categories',
-						separator: ' > ',
-						sortBy: ['count'],
-						attributes: ['taxonomies_hierarchical.category.lvl0', 'taxonomies_hierarchical.category.lvl1', 'taxonomies_hierarchical.category.lvl2'],
-						templates: {
-							header: '<h3 class="widgettitle">Categories</h3>'
-						}
-					})
-				);
-*/
-				/* Tags refinement widget */
-/*				search.addWidget(
-					instantsearch.widgets.refinementList({
-						container: '#facet-tags',
-						attributeName: 'taxonomies.post_tag',
-						operator: 'and',
-						limit: 15,
-						sortBy: ['isRefined:desc', 'count:desc', 'name:asc'],
-						templates: {
-							header: '<h3 class="widgettitle">Tags</h3>'
-						}
-					})
-				);
-*/
-				/* Users refinement widget */
-/*				search.addWidget(
-					instantsearch.widgets.menu({
-						container: '#facet-users',
-						attributeName: 'post_author.display_name',
-						sortBy: ['isRefined:desc', 'count:desc', 'name:asc'],
-						limit: 10,
-						templates: {
-							header: '<h3 class="widgettitle">Authors</h3>'
-						}
-					})
-				);
-*/
 				/* Start */
 				search.start();
 

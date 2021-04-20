@@ -1,6 +1,6 @@
 <?php
 /**
- * Algolia_Search class file.
+ * Typesense_Search class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -8,14 +8,14 @@
  * @package WebDevStudios\WPSWA
  */
 
-use Algolia\AlgoliaSearch\Exceptions\AlgoliaException;
+use Typesense\TypesenseSearch\Exceptions\TypesenseException;
 
 /**
- * Class Algolia_Search
+ * Class Typesense_Search
  *
  * @since 1.0.0
  */
-class Algolia_Search {
+class Typesense_Search {
 
 	/**
 	 * Current page hits.
@@ -38,24 +38,24 @@ class Algolia_Search {
 	private $total_hits;
 
 	/**
-	 * Instance of Algolia_Index.
+	 * Instance of Typesense_Index.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @var Algolia_Index
+	 * @var Typesense_Index
 	 */
 	private $index;
 
 	/**
-	 * Algolia_Search constructor.
+	 * Typesense_Search constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @param Algolia_Index $index Instance of Algolia_Index.
+	 * @param Typesense_Index $index Instance of Typesense_Index.
 	 */
-	public function __construct( Algolia_Index $index ) {
+	public function __construct( Typesense_Index $index ) {
 		$this->index = $index;
 
 		add_action( 'loop_start', [ $this, 'begin_highlighting' ] );
@@ -81,18 +81,18 @@ class Algolia_Search {
 		 *
 		 * @since  1.3.0
 		 *
-		 * @param bool     $should_filter Whether Algolia should filter the search query.
-		 * @param WP_Query $query         The WP_Query that was tested for Algolia Search filtering.
+		 * @param bool     $should_filter Whether Typesense should filter the search query.
+		 * @param WP_Query $query         The WP_Query that was tested for Typesense Search filtering.
 		 */
 		return (bool) apply_filters(
-			'algolia_should_filter_query',
+			'Typesense_should_filter_query',
 			$should_filter,
 			$query
 		);
 	}
 
 	/**
-	 * We force the WP_Query to only return records according to Algolia's ranking.
+	 * We force the WP_Query to only return records according to Typesense's ranking.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -114,14 +114,14 @@ class Algolia_Search {
 		}
 
 		/**
-		 * Filters the array of parameters used in the Algolia Index search.
+		 * Filters the array of parameters used in the Typesense Index search.
 		 *
 		 * @author WebDevStudios <contact@webdevstudios.com>
 		 * @since  1.0.0
 		 * @since  1.2.0 Introduced 'highlightPreTag' and 'highlightPostTag` parameters.
 		 *
 		 * @param array $params {
-		 *     Search parameters for the Algolia Index search.
+		 *     Search parameters for the Typesense Index search.
 		 *
 		 *     @type string $attributesToRetrieve Which attributes to retrieve.
 		 *     @type int    $hitsPerPage          Pagination parameter. The number of hits per page to retrieve.
@@ -131,22 +131,22 @@ class Algolia_Search {
 		 * }
 		 */
 		$params = apply_filters(
-			'algolia_search_params',
+			'Typesense_search_params',
 			array(
 				'attributesToRetrieve' => 'post_id',
 				'hitsPerPage'          => (int) get_option( 'posts_per_page' ),
-				'page'                 => $current_page - 1, // Algolia pages are zero indexed.
-				'highlightPreTag'      => '<em class="algolia-search-highlight">',
+				'page'                 => $current_page - 1, // Typesense pages are zero indexed.
+				'highlightPreTag'      => '<em class="Typesense-search-highlight">',
 				'highlightPostTag'     => '</em>',
 			)
 		);
 
-		$order_by = apply_filters( 'algolia_search_order_by', null );
-		$order    = apply_filters( 'algolia_search_order', 'desc' );
+		$order_by = apply_filters( 'Typesense_search_order_by', null );
+		$order    = apply_filters( 'Typesense_search_order', 'desc' );
 
 		try {
 			$results = $this->index->search( $query->query['s'], $params, $order_by, $order );
-		} catch ( AlgoliaException $exception ) {
+		} catch ( TypesenseException $exception ) {
 			error_log( $exception->getMessage() ); // phpcs:ignore -- Legacy.
 
 			return;
@@ -199,7 +199,7 @@ class Algolia_Search {
 	}
 
 	/**
-	 * This hook returns the actual real number of results available in Algolia.
+	 * This hook returns the actual real number of results available in Typesense.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -215,9 +215,9 @@ class Algolia_Search {
 
 	/**
 	 * Filter the search SQL that is used in the WHERE clause of WP_Query.
-	 * Removes the where Like part of the queries as we consider Algolia as being the source of truth.
+	 * Removes the where Like part of the queries as we consider Typesense as being the source of truth.
 	 * We don't want to filter by anything but the actual list of post_ids resulting
-	 * from the Algolia search.
+	 * from the Typesense search.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -244,13 +244,13 @@ class Algolia_Search {
 			return;
 		}
 
-		if ( ! apply_filters( 'algolia_search_highlighting_enable_bundled_styles', true ) ) {
+		if ( ! apply_filters( 'Typesense_search_highlighting_enable_bundled_styles', true ) ) {
 			return;
 		}
 
 		?>
 		<style>
-			.algolia-search-highlight {
+			.Typesense-search-highlight {
 				background-color: #fffbcc;
 				border-radius: 2px;
 				font-style: normal;
@@ -304,7 +304,7 @@ class Algolia_Search {
 	}
 
 	/**
-	 * Filter the_title, replacing it with the highlighted title from the Algolia index.
+	 * Filter the_title, replacing it with the highlighted title from the Typesense index.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -325,7 +325,7 @@ class Algolia_Search {
 	}
 
 	/**
-	 * Filter get_the_excerpt, replacing it with the highlighted excerpt from the Algolia index.
+	 * Filter get_the_excerpt, replacing it with the highlighted excerpt from the Typesense index.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -354,6 +354,6 @@ class Algolia_Search {
 	 * @return bool
 	 */
 	private function highlighting_enabled() : bool {
-		return apply_filters( 'algolia_search_highlighting_enabled', true );
+		return apply_filters( 'Typesense_search_highlighting_enabled', true );
 	}
 }

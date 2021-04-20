@@ -131,7 +131,6 @@ class Typesense_Plugin {
 	public function __construct() {
 		$this->settings      = new Typesense_Settings();
 		$this->api           = new Typesense_API( $this->settings );
-		//$this->compatibility = new Typesense_Compatibility();
 		$this->scripts       = new Typesense_Scripts();
 		$this->styles        = new Typesense_Styles();
 		add_action( 'init', array( $this, 'load' ), 20 );
@@ -144,12 +143,6 @@ class Typesense_Plugin {
 	 * @since  1.0.0
 	 */
 	public function load() {
-		if ( $this->api->is_reachable() ) {
-			//$this->load_indices();
-			//$this->override_wordpress_search();
-			//$this->autocomplete_config = new Typesense_Autocomplete_Config( $this );
-			//$this->template_loader     = new Typesense_Template_Loader( $this );
-		}
 		$this->template_loader     = new Typesense_Template_Loader( $this );
 		$this->autocomplete_config = new Typesense_Autocomplete_Config( $this );
 		$this->load_indices();
@@ -263,75 +256,13 @@ class Typesense_Plugin {
 		$this->indices[] = new Typesense_Posts_Index('post');
 
 		$this->indices[1] = new Typesense_Terms_Index( 'category' );
-		// Add a searchable posts index.
-		/*
-		$searchable_post_types = get_post_types(
-			array(
-				'exclude_from_search' => false,
-			), 'names'
-		);
-		$searchable_post_types = (array) apply_filters( 'typesense_searchable_post_types', $searchable_post_types );
-		$this->indices[]       = new Typesense_Searchable_Posts_Index( $searchable_post_types );
 
-		// Add one posts index per post type.
-		$post_types = get_post_types();
-
-		$excluded_post_types = $this->settings->get_excluded_post_types();
-		foreach ( $post_types as $post_type ) {
-			// Skip excluded post types.
-			if ( in_array( $post_type, $excluded_post_types, true ) ) {
-				continue;
-			}
-
-			$this->indices[] = new Typesense_Posts_Index( $post_type );
-		}
-
-		// Add one terms index per taxonomy.
-		$taxonomies          = get_taxonomies();
-		//$excluded_taxonomies = $this->settings->get_excluded_taxonomies();
-		foreach ( $taxonomies as $taxonomy ) {
-			// Skip excluded taxonomies.
-			//if ( in_array( $taxonomy, $excluded_taxonomies, true ) ) {
-			//	continue;
-			//}
-
-			$this->indices[] = new Typesense_Terms_Index( $taxonomy );
-		}
-
-		// Add the users index.
-		/*$this->indices[] = new Typesense_Users_Index();
-
-		// Allow developers to filter the indices.
-		$this->indices = (array) apply_filters( 'typesense_indices', $this->indices );
-		*/
-		//foreach ( $this->indices as $index ) {
-		//$this->indices[0]->set_name_prefix( $index_name_prefix );
 		$this->indices[0]->set_client( $client);
+		$this->indices[1]->set_client( $client);
+
 		$this->changes_watchers=array();
 		$this->changes_watchers[] = new Typesense_Post_Changes_Watcher( $this->indices[0] );
 
-		$this->indices[1]->set_client( $client);
-		/*'
-			if ( in_array( $index->get_id(), $synced_indices_ids, true ) ) {
-				$index->set_enabled( true );
-
-				if ( $index->contains_only( 'posts' ) ) {
-					$this->changes_watchers[] = new Typesense_Post_Changes_Watcher( $index );
-				} elseif ( $index->contains_only( 'terms' ) ) {
-					$this->changes_watchers[] = new Typesense_Term_Changes_Watcher( $index );
-				} elseif ( $index->contains_only( 'users' ) ) {
-					$this->changes_watchers[] = new Typesense_User_Changes_Watcher( $index );
-				}
-			}
-*/
-		//}
-/*
-		$this->changes_watchers = (array) apply_filters( 'typesense_changes_watchers', $this->changes_watchers );
-
-		foreach ( $this->changes_watchers as $watcher ) {
-			$watcher->watch();
-		}
-*/
 		$this->changes_watchers[0]->watch();
 	}
 
@@ -347,30 +278,6 @@ class Typesense_Plugin {
 	 * @return array
 	 */
 	public function get_indices() {
-		/*
-		if ( empty( $args ) ) {
-			return $this->indices;
-		}
-
-		$indices = $this->indices;
-
-		if ( isset( $args['enabled'] ) && true === $args['enabled'] ) {
-			$indices = array_filter(
-				$indices, function( $index ) {
-					return $index->is_enabled();
-				}
-			);
-		}
-
-		if ( isset( $args['contains'] ) ) {
-			$contains = (string) $args['contains'];
-			$indices  = array_filter(
-				$indices, function( $index ) use ( $contains ) {
-					return $index->contains_only( $contains );
-				}
-			);
-		}
-*/
 		return $this->indices;
 	}
 

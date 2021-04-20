@@ -1,6 +1,6 @@
 <?php
 /**
- * Algolia_CLI class file.
+ * Typesense_CLI class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,36 +9,36 @@
  */
 
 /**
- * Class Algolia_CLI
+ * Class Typesense_CLI
  *
- * Push and re-index records into Algolia indices.
+ * Push and re-index records into Typesense indices.
  *
  * @since 1.0.0
  */
-class Algolia_CLI extends \WP_CLI_Command {
+class Typesense_CLI extends \WP_CLI_Command {
 
 	/**
-	 * The Algolia_Plugin instance.
+	 * The Typesense_Plugin instance.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @var Algolia_Plugin
+	 * @var Typesense_Plugin
 	 */
 	private $plugin;
 
 	/**
-	 * Algolia_CLI constructor.
+	 * Typesense_CLI constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 */
 	public function __construct() {
-		$this->plugin = Algolia_Plugin_Factory::create();
+		$this->plugin = Typesense_Plugin_Factory::create();
 	}
 
 	/**
-	 * Push all records to Algolia for a given index.
+	 * Push all records to Typesense for a given index.
 	 *
 	 * ## OPTIONS
 	 *
@@ -53,7 +53,7 @@ class Algolia_CLI extends \WP_CLI_Command {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp algolia re-index
+	 *     wp Typesense re-index
 	 *
 	 * @alias re-index
 	 *
@@ -65,7 +65,7 @@ class Algolia_CLI extends \WP_CLI_Command {
 	 */
 	public function reindex( $args, $assoc_args ) {
 		if ( ! $this->plugin->get_api()->is_reachable() ) {
-			WP_CLI::error( 'The configuration for this website does not allow to contact the Algolia API.' );
+			WP_CLI::error( 'The configuration for this website does not allow to contact the Typesense API.' );
 		}
 
 		$index_id = isset( $args[0] ) ? $args[0] : null;
@@ -105,19 +105,19 @@ class Algolia_CLI extends \WP_CLI_Command {
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @param Algolia_Index $index Algolia_Index instance.
+	 * @param Typesense_Index $index Typesense_Index instance.
 	 * @param bool          $clear Clear all existing records prior to pushing the records.
 	 *
 	 * @return void
 	 */
-	private function do_reindex( Algolia_Index $index, $clear ) {
+	private function do_reindex( Typesense_Index $index, $clear ) {
 
 		if ( $clear ) {
 			/* translators: the placeholder will contain the name of the index. */
-			WP_CLI::log( sprintf( __( 'About to clear index %s...', 'wp-search-with-algolia' ), $index->get_name() ) );
+			WP_CLI::log( sprintf( __( 'About to clear index %s...', 'wp-search-with-Typesense' ), $index->get_name() ) );
 			$index->clear();
 			/* translators: the placeholder will contain the name of the index. */
-			WP_CLI::success( sprintf( __( 'Correctly cleared index "%s".', 'wp-search-with-algolia' ), $index->get_name() ) );
+			WP_CLI::success( sprintf( __( 'Correctly cleared index "%s".', 'wp-search-with-Typesense' ), $index->get_name() ) );
 		}
 
 		$total_pages = $index->get_re_index_max_num_pages();

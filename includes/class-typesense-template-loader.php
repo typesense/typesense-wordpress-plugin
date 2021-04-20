@@ -53,7 +53,7 @@ class Typesense_Template_Loader {
 		// Listen for native templates to override.
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 
-		// Load autocomplete.js search experience if its enabled.
+		// autocomplete features to be added
 		/*
 		if ( $this->should_load_autocomplete() ) {
 			add_filter( 'wp_enqueue_scripts', array( $this, 'enqueue_autocomplete_scripts' ) );
@@ -78,12 +78,9 @@ class Typesense_Template_Loader {
 		$autocomplete_config = $this->plugin->get_autocomplete_config();
 
 		$config = array(
-			//'debug'              => defined( 'WP_DEBUG' ) && WP_DEBUG,
-			//'application_id'     => $settings->get_application_id(),
 			'api_key'     => $settings->get_api_key(),
 			'port'     => $settings->get_port(),
 			'host'     => $settings->get_host(),
-			//'powered_by_enabled' => $this->settings->is_powered_by_enabled(),
 			'query'              => get_search_query(),
 			//'autocomplete'       => array(
 			//	'sources'        => $autocomplete_config->get_config(),
@@ -93,17 +90,7 @@ class Typesense_Template_Loader {
 		);
 
 		// Inject all the indices into the config to ease instantsearch.js integrations.
-		$indices = $this->plugin->get_indices(
-			//array(
-			//	'enabled' => true,
-			//)
-		);
-		//foreach ( $indices as $index ) {
-		//	$config['indices'][ $index->get_id() ] = $index->to_array();
-		//}
-
-		// Give developers a last chance to alter the configuration.
-		//$config = (array) apply_filters( 'algolia_config', $config );
+		$indices = $this->plugin->get_indices();
 
 		echo '<script type="text/javascript">var algolia = ' . wp_json_encode( $config ) . ';</script>';
 	}
@@ -193,19 +180,10 @@ class Typesense_Template_Loader {
 			'wp_enqueue_scripts', function () {
 				// Enqueue the instantsearch.js default styles.
 				wp_enqueue_style( 'algolia-instantsearch-native' );
-				//wp_enqueue_style( 'algolia-instantsearch' );
 				// Enqueue the instantsearch.js library.
 				wp_enqueue_script( 'algolia-instantsearch' );
 
-				//wp_enqueue_script( 'typesense-js' );
-				//wp_enqueue_script( 'typesense-min-js' );
-				//wp_enqueue_script( 'typesense-min-js-map' );
-
 				wp_enqueue_script( 'typesense-adapter' );
-				//wp_enqueue_script( 'typesense-adapter-map' );
-
-				// Allow users to easily enqueue custom styles and scripts.
-				//do_action( 'algolia_instantsearch_scripts' );
 			}
 		);
 

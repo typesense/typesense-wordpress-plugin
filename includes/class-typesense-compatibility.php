@@ -1,6 +1,6 @@
 <?php
 /**
- * Algolia_Compatibility class file.
+ * Typesense_Compatibility class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,11 +9,11 @@
  */
 
 /**
- * Class Algolia_Compatibility
+ * Class Typesense_Compatibility
  *
  * @since 1.0.0
  */
-class Algolia_Compatibility {
+class Typesense_Compatibility {
 
 	/**
 	 * The "current language" from WPML, if available, else null.
@@ -26,16 +26,16 @@ class Algolia_Compatibility {
 	private $current_language;
 
 	/**
-	 * Algolia_Compatibility constructor.
+	 * Typesense_Compatibility constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 */
 	public function __construct() {
-		add_action( 'algolia_before_get_records', array( $this, 'register_vc_shortcodes' ) );
-		add_action( 'algolia_before_get_records', array( $this, 'enable_yoast_frontend' ) );
-		add_action( 'algolia_before_get_records', array( $this, 'wpml_switch_language' ) );
-		add_action( 'algolia_after_get_records', array( $this, 'wpml_switch_back_language' ) );
+		add_action( 'Typesense_before_get_records', array( $this, 'register_vc_shortcodes' ) );
+		add_action( 'Typesense_before_get_records', array( $this, 'enable_yoast_frontend' ) );
+		add_action( 'Typesense_before_get_records', array( $this, 'wpml_switch_language' ) );
+		add_action( 'Typesense_after_get_records', array( $this, 'wpml_switch_back_language' ) );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Algolia_Compatibility {
 	/**
 	 * Check if WPML is enabled.
 	 *
-	 * @link https://github.com/algolia/algoliasearch-wordpress/issues/567
+	 * @link https://github.com/Typesense/Typesensesearch-wordpress/issues/567
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0

@@ -112,19 +112,6 @@ class Typesense_Admin_Page_Settings {
 	 */
 	public function add_page() {
 		$api = $this->plugin->get_api();
-		/*
-		if ( ! $api->is_reachable() ) {
-			// Means this is the only reachable admin page, so make it the default one!
-			return add_menu_page(
-				'WP Search with Typesense',
-				esc_html__( 'Typesense Search', 'wp-search-with-typesense' ),
-				'manage_options',
-				$this->slug,
-				array( $this, 'display_page' ),
-				''
-			);
-		}
-*/
 		add_submenu_page(
 			'typesense',
 			esc_html__( 'Settings', 'wp-search-with-typesense' ),
@@ -148,15 +135,6 @@ class Typesense_Admin_Page_Settings {
 			array( $this, 'print_section_settings' ),
 			$this->slug
 		);
-		/*
-		add_settings_field(
-			'typesense_application_id',
-			esc_html__( 'Application ID', 'wp-search-with-typesense' ),
-			array( $this, 'application_id_callback' ),
-			$this->slug,
-			$this->section
-		);
-*/
 		add_settings_field(
 			'typesense_api_key',
 			esc_html__( 'API key', 'wp-search-with-typesense' ),
@@ -180,15 +158,7 @@ class Typesense_Admin_Page_Settings {
 			$this->slug,
 			$this->section
 		);
-/*
-		add_settings_field(
-			'typesense_api_key',
-			esc_html__( 'Admin API key', 'wp-search-with-typesense' ),
-			array( $this, 'api_key_callback' ),
-			$this->slug,
-			$this->section
-		);
-*/
+
 		add_settings_field(
 			'typesense_index_name_prefix',
 			esc_html__( 'Index name prefix', 'wp-search-with-typesense' ),
@@ -207,11 +177,7 @@ class Typesense_Admin_Page_Settings {
 
 		register_setting( $this->option_group, 'typesense_port' );
 		register_setting( $this->option_group, 'typesense_host');
-		//register_setting( $this->option_group, 'typesense_application_id', array( $this, 'sanitize_application_id' ) );
 		register_setting( $this->option_group, 'typesense_api_key' );
-		//register_setting( $this->option_group, 'typesense_api_key', array( $this, 'sanitize_api_key' ) );
-		//register_setting( $this->option_group, 'typesense_index_name_prefix', array( $this, 'sanitize_index_name_prefix' ) );
-		//register_setting( $this->option_group, 'typesense_powered_by_enabled', array( $this, 'sanitize_powered_by_enabled' ) );
 	}
 
 	/**
@@ -251,7 +217,6 @@ class Typesense_Admin_Page_Settings {
 	public function host_callback() {
 		$settings      = $this->plugin->get_settings();
 		$setting       = $settings->get_host();
-		//$disabled_html = $settings->is_search_api_key_in_config() ? ' disabled' : '';
 
 ?>
 		<input type="text" name="typesense_host" class="regular-text" value="<?php echo esc_attr( $setting ); ?>"/>
@@ -262,8 +227,6 @@ class Typesense_Admin_Page_Settings {
 	public function port_callback() {
 		$settings      = $this->plugin->get_settings();
 		$setting       = $settings->get_port();
-		//$disabled_html = $settings->is_search_api_key_in_config() ? ' disabled' : '';
-
 ?>
 		<input type="text" name="typesense_port" class="regular-text" value="<?php echo esc_attr( $setting ); ?>"/>
 		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense Server Port.', 'wp-search-with-typesense' ); ?></p>
@@ -278,7 +241,6 @@ class Typesense_Admin_Page_Settings {
 	public function api_key_callback() {
 		$settings      = $this->plugin->get_settings();
 		$setting       = $settings->get_api_key();
-		//$disabled_html = $settings->is_api_key_in_config() ? ' disabled' : '';
 ?>
 		<input type="text" name="typesense_api_key" class="regular-text" value="<?php echo esc_attr( $setting ); ?>"/>
 		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense API key.', 'wp-search-with-typesense' ); ?></p>
@@ -373,9 +335,7 @@ class Typesense_Admin_Page_Settings {
 	}
 
 	public function sanitize_host( $value ) {
-		//if ( $this->plugin->get_settings()->is_search_api_key_in_config() ) {
-			$value = $this->plugin->get_settings()->get_host();
-		//}
+		$value = $this->plugin->get_settings()->get_host();
 		$value = sanitize_text_field( $value );
 
 		if ( empty( $value ) ) {
@@ -390,103 +350,10 @@ class Typesense_Admin_Page_Settings {
 	}
 
 	public function sanitize_port( $value ) {
-		//if ( $this->plugin->get_settings()->is_search_api_key_in_config() ) {
-			$value = $this->plugin->get_settings()->get_port();
-		//}
+		$value = $this->plugin->get_settings()->get_port();
 		$value = sanitize_text_field( $value );
-
-		/*if ( empty( $value ) ) {
-			add_settings_error(
-				$this->option_group,
-				'empty',
-				esc_html__( 'Port should not be empty.', 'wp-search-with-typesense' )
-			);
-		}*/
-
 		return $value;
 	}
-
-	/**
-	 * Sanitize Admin API key.
-	 *
-	 * @author Richard Aber <richard.aber@webdevstudios.com>
-	 * @since  2020-07-24
-	 *
-	 * @param string $value The value to sanitize.
-	 *
-	 * @return string
-	 */
-	/*
-	public function sanitize_api_key( $value ) {
-		//if ( $this->plugin->get_settings()->is_api_key_in_config() ) {
-			$value = $this->plugin->get_settings()->get_api_key();
-		//}
-		$value = sanitize_text_field( $value );
-
-		if ( empty( $value ) ) {
-			add_settings_error(
-				$this->option_group,
-				'empty',
-				esc_html__( 'API key should not be empty', 'wp-search-with-typesense' )
-			);
-		}
-
-		$errors = get_settings_errors( $this->option_group );
-
-		// @todo Not 100% clear why this is returning here.
-		if ( ! empty( $errors ) ) {
-			return $value;
-		}
-
-		$settings = $this->plugin->get_settings();
-
-		$valid_credentials = true;
-		try {
-			Typesense_API::assert_valid_credentials( $settings->get_application_id(), $value );
-		} catch ( Exception $exception ) {
-			$valid_credentials = false;
-			add_settings_error(
-				$this->option_group,
-				'login_exception',
-				$exception->getMessage()
-			);
-		}
-
-		if ( ! $valid_credentials ) {
-			add_settings_error(
-				$this->option_group,
-				'no_connection',
-				esc_html__(
-					'We were unable to authenticate you against the Typesense servers with the provided information. Please ensure that you used a valid Application ID and Admin API key.',
-					'wp-search-with-typesense'
-				)
-			);
-			$settings->set_api_is_reachable( false );
-		} else {
-			if ( ! Typesense_API::is_valid_search_api_key( $settings->get_application_id(), $settings->get_search_api_key() ) ) {
-				add_settings_error(
-					$this->option_group,
-					'wrong_search_API_key',
-					esc_html__(
-						'It looks like your search API key is wrong. Ensure that the key you entered has only the search capability and nothing else. Also ensure that the key has no limited time validity.',
-						'wp-search-with-typesense'
-					)
-				);
-				$settings->set_api_is_reachable( false );
-			} else {
-				add_settings_error(
-					$this->option_group,
-					'connection_success',
-					esc_html__( 'We succesfully managed to connect to the Typesense servers with the provided information. Your search API key has also been checked and is OK.', 'wp-search-with-typesense' ),
-					'updated'
-				);
-				$settings->set_api_is_reachable( true );
-			}
-		}
-
-		return $value;
-	}
-*/
 	/**
 	 * Determine if the index name prefix is valid.
 	 *
