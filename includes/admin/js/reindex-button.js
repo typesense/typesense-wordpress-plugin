@@ -9,9 +9,10 @@
 
 	function handleButtonClick(e) {
         $clickedButton = $( e.currentTarget );
+		var index      = $clickedButton.data( 'index_id' );
 		disableButton( $clickedButton );
 
-		pushSettings( $clickedButton);
+		pushSettings( $clickedButton,index);
 		//alert('wefwerfwfer');
 	}
 
@@ -23,11 +24,11 @@
 		$button.prop( 'disabled', false );
 	}
 
-	function pushSettings($clickedButton) {
+	function pushSettings($clickedButton,index) {
 
 		var data = {
 			'action': 'typesense_re_index',
-            'whatever': 123
+            index: 'qwe'
 		};
 
 		$.post(
@@ -39,7 +40,6 @@
 			function(response) {
 				alert( 'An error occurred: ' + response.responseText );
 				enableButton( $clickedButton );
-				resetButton( $clickedButton );
 			}
 		);
 	}

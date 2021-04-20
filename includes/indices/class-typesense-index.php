@@ -25,7 +25,7 @@ abstract class Typesense_Index {
 	 *
 	 * @var Client
 	 */
-	private $client;
+	public $client;
 
 	/**
 	 * Whether this index is enabled or not.
@@ -262,7 +262,7 @@ abstract class Typesense_Index {
 			$this->create_collection_if_not_existing();
 			$records = $this->get_records( $post );
 			//do_action( 'Typesense_after_get_records', $item );
-			$content = $post->post_content;
+			/*$content = $post->post_content;
 			$shared_attributes                        = array();
 			$shared_attributes['post_id']             = (string)$post->ID;
 			$shared_attributes['post_excerpt']        = apply_filters( 'the_excerpt', $post->post_excerpt ); // phpcs:ignore -- Legitimate use of Core hook.
@@ -272,7 +272,7 @@ abstract class Typesense_Index {
 			$shared_attributes['id']     = '3000';
 			$shared_attributes['post_date']           = (string)get_post_time( 'U', false, $post );
 			$shared_attributes['post_modified']       = (string)get_post_modified_time( 'U', false, $post );
-			$shared_attributes['is_sticky'] = is_sticky( $post->ID ) ? 1 : 0;
+			$shared_attributes['is_sticky'] = is_sticky( $post->ID ) ? 1 : 0;*/
 			try{
 				//throw new RuntimeException('Dummy23');
 				$this->update_records( $post, $records );	
@@ -321,7 +321,7 @@ abstract class Typesense_Index {
 	 *
 	 * @return void
 	 */
-	protected function update_records( $item, $records) {
+	public function update_post_records( $item, $records) {
 		/*if ( empty( $records ) ) {
 			$this->delete_item( $item );
 			return;
@@ -334,7 +334,36 @@ abstract class Typesense_Index {
 			$this->client->collections['posts']->documents->create($records);
 		}
 		catch(Exception $e){
-			throw $e;
+			//throw $e;
+		}
+		try{
+			$this->client->collections['posts']->documents[$records['id']]->update($records);
+		}
+		catch(Exception $f){
+			throw $f;
+		}
+	}
+
+	public function update_term_records( $item, $records) {
+		/*if ( empty( $records ) ) {
+			$this->delete_item( $item );
+			return;
+		}
+		*/
+		try{
+			//throw new RuntimeException('Dummy12345');
+			//$collection  = $this->get_collection();
+			//$records = $this->sanitize_json_data( $records );
+			$this->client->collections['terms']->documents->create($records);
+		}
+		catch(Exception $e){
+			//throw $e;
+		}
+		try{
+			$this->client->collections['terms']->documents[$records['id']]->update($records);
+		}
+		catch(Exception $f){
+			throw $f;
 		}
 	}
 
@@ -375,7 +404,7 @@ abstract class Typesense_Index {
 	 * @throws InvalidArgumentException If the page is less than 1.
 	 */
 	public function re_index( $page ) {
-		$page = (int) $page;
+		/*$page = (int) $page;
 
 		if ( $page < 1 ) {
 			throw new InvalidArgumentException( 'Page should be superior to 0.' );
@@ -421,7 +450,8 @@ abstract class Typesense_Index {
 
 		if ( $page === $max_num_pages ) {
 			do_action( 'Typesense_re_indexed_items', $this->get_id() );
-		}
+		}*/
+
 	}
 
 	/**
@@ -631,23 +661,42 @@ abstract class Typesense_Index {
 			  ['name' => 'is_sticky', 'type' => 'int32'],
 			  ['name' => 'post_excerpt', 'type' => 'string'],
 			  ['name' => 'post_date', 'type' => 'string'],
+			  ['name' => 'post_type', 'type' => 'string',"facet"=>true],
 			  ['name' => 'post_id', 'type' => 'string'],
 			  ['name' => 'post_modified', 'type' => 'string'],
-			  ['name' => 'id', 'type' => 'string']
+			  ['name' => 'id', 'type' => 'string'],
+			  ['name' => 'permalink', 'type' => 'string'],
+			  ['name' => 'category', 'type' => 'string','facet'=>true]
 			],
 			'default_sorting_field' => 'comment_count'
 		  ];
-		/*  try{
+
+		  $termsSchema=[
+			'name' => 'terms',
+			'fields' => [
+			  ['name' => 'term_id', 'type' => 'string'],
+			  ['name' => 'id', 'type' => 'string'],
+			  ['name' => 'taxonomy', 'type' => 'string'],
+			  ['name' => 'name', 'type' => 'string'],
+			  ['name' => 'description', 'type' => 'string'],
+			  ['name' => 'slug', 'type' => 'string'],
+			  ['name' => 'posts_count', 'type' => 'int64'],
+			  ['name' => 'permalink', 'type' => 'string'],
+			],
+			'default_sorting_field' => 'posts_count'
+		  ];
+		  
+		try{
 			$this->client->collections->create($postsSchema);
 		  }
-		  catch(Exception $e){
-			  return;
+		catch(Exception $e){
+
+		}
+
+		try{
+		  	$this->client->collections->create($termsSchema);
 		  }
-		  */
-		  try{
-		  	$this->client->collections->create($postsSchema);
-		  }
-		  catch(Exception $e){
+		catch(Exception $e){
 			  return;
 		  }
 	}
@@ -801,8 +850,33 @@ abstract class Typesense_Index {
 	 *
 	 * @param mixed $item The item to delete.
 	 */
-	abstract public function delete_item( $item );
+	//abstract public function delete_item( $item );
 
+	public function delete_item( $post ) {
+		//$this->assert_is_supported( $item );
+/*
+		$records_count = $this->get_post_records_count( $item->ID );
+		$object_ids    = array();
+		for ( $i = 0; $i < $records_count; $i++ ) {
+			$object_ids[] = $this->get_post_object_id( $item->ID, $i );
+		}
+
+		if ( ! empty( $object_ids ) ) {
+			$this->get_index()->deleteObjects( $object_ids );
+		}
+*/
+		try{
+			//throw new RuntimeException('Dummy12345');
+			//$collection  = $this->get_collection();
+			//$records = $this->sanitize_json_data( $records );
+			$key = (string)$post->ID;
+			$this->client->collections['posts']->documents[$key]->delete();
+			//throw new RuntimeException($key);
+		}
+		catch(Exception $e){
+			throw $e;
+		}
+	}
 	/**
 	 * Check if the index exists in Typesense.
 	 *

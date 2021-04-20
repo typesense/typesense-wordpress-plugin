@@ -224,10 +224,12 @@ class Typesense_Admin {
 	 * @throws Exception If index ID or page are not provided, or index name dies not exist.
 	 */
 	public function re_index() {
-		/*
-		$index_id = filter_input( INPUT_POST, 'index_id', FILTER_SANITIZE_STRING );
-		$page     = filter_input( INPUT_POST, 'p', FILTER_SANITIZE_STRING );
-
+		
+		$index_id = $_GET['index'];
+ 		//$index_id = filter_input( INPUT_POST, 'index', FILTER_SANITIZE_STRING );
+		//$page     = filter_input( INPUT_POST, 'p', FILTER_SANITIZE_STRING );
+		//echo($index_id);
+/*
 		try {
 			if ( empty( $index_id ) ) {
 				throw new RuntimeException( 'Index ID should be provided.' );
@@ -278,18 +280,32 @@ class Typesense_Admin {
 		];
 		$indices = $this->plugin->get_indices();
 		//$post_index = $indices[0];
-		try{
-			//$indices[0]->sync($document);
-			//$client = $this->plugin->get_api()->get_client();
-			//$client->collections['posts']->documents->create($document);
-			//echo gettype($this->plugin->get_api()->get_client());
-			//$client = $this->plugin->get_api()->get_client();
-			//$client->collections['posts']->documents->create($document);
-			throw new RuntimeException('All records indexed');
-		}
-		catch(Exception $e){
-			echo $e->getMessage();
-		}
+		//if(strcmp($index_id,"posts_post")==0){
+			try{
+				//$indices[0]->sync($document);
+				//$client = $this->plugin->get_api()->get_client();
+				//$client->collections['posts']->documents->create($document);
+				//echo gettype($this->plugin->get_api()->get_client());
+				//$client = $this->plugin->get_api()->get_client();
+				//$client->collections['posts']->documents->create($document);
+				$terms = get_terms(array(
+					'taxonomy' => 'category',
+					'hide_empty' => false
+				));
+				foreach($terms as $term){
+					try{
+						$indices[1]->sync($term);
+					}
+					catch(Exception $e){
+						continue;
+					}
+				}
+				throw new RuntimeException('All records indexed yes'.gettype($index_id));
+			}
+			catch(Exception $e){
+				echo $e->getMessage();
+			}
+		//}
 	}
 
 	/**

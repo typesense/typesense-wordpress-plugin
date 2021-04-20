@@ -1,6 +1,6 @@
 <?php
 /**
- * Algolia_Term_Changes_Watcher class file.
+ * Typesense_Term_Changes_Watcher class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -8,34 +8,33 @@
  * @package WebDevStudios\WPSWA
  */
 
-use Algolia\AlgoliaSearch\Exceptions\AlgoliaException;
 
 /**
- * Class Algolia_Term_Changes_Watcher
+ * Class Typesense_Term_Changes_Watcher
  *
  * @since 1.0.0
  */
-class Algolia_Term_Changes_Watcher implements Algolia_Changes_Watcher {
+class Typesense_Term_Changes_Watcher implements Typesense_Changes_Watcher {
 
 	/**
-	 * Algolia_Index instance.
+	 * Typesense_Index instance.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @var Algolia_Index
+	 * @var Typesense_Index
 	 */
 	private $index;
 
 	/**
-	 * Algolia_Term_Changes_Watcher constructor.
+	 * Typesense_Term_Changes_Watcher constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @param Algolia_Index $index Algolia_Index instance.
+	 * @param Typesense_Index $index Typesense_Index instance.
 	 */
-	public function __construct( Algolia_Index $index ) {
+	public function __construct( Typesense_Index $index ) {
 		$this->index = $index;
 	}
 
@@ -79,7 +78,7 @@ class Algolia_Term_Changes_Watcher implements Algolia_Changes_Watcher {
 
 		try {
 			$this->index->sync( $term );
-		} catch ( AlgoliaException $exception ) {
+		} catch ( TypesenseException $exception ) {
 			error_log( $exception->getMessage() ); // phpcs:ignore -- Legacy.
 		}
 	}
@@ -126,7 +125,7 @@ class Algolia_Term_Changes_Watcher implements Algolia_Changes_Watcher {
 
 		try {
 			$this->index->delete_item( $deleted_term );
-		} catch ( AlgoliaException $exception ) {
+		} catch ( TypesenseException $exception ) {
 			error_log( $exception->getMessage() ); // phpcs:ignore -- Legacy.
 		}
 	}

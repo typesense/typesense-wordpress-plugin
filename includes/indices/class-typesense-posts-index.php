@@ -160,7 +160,7 @@ class Typesense_Posts_Index  extends Typesense_Index{
 
 		//$post_content = apply_filters( 'algolia_post_content', $post->post_content, $post );
 		$content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore -- Legitimate use of Core hook.
-		$shared_attributes['post_content'] = $content;
+		$shared_attributes['post_content'] = strip_tags($content);
 		/*
 		if ( true === $removed ) {
 			add_filter( 'the_content', 'wptexturize', 10 );
@@ -177,9 +177,10 @@ class Typesense_Posts_Index  extends Typesense_Index{
 
 		//foreach ( $parts as $i => $part ) {
 			$records                 = $shared_attributes;
-			$id = get_option('typesense_post_count');
+			$records['id']     = (string)$post->ID;
+			/*$id = get_option('typesense_post_count');
 			$records['id']     = (string)($id+1);//$this->get_post_object_id( $post->ID,  );
-			update_option('typesense_post_count',$id+1);
+			update_option('typesense_post_count',$id+1);*/
 			//$record['content']      = $part;
 			//$record['record_index'] = $i;
 			//$records[]              = $record;
@@ -192,6 +193,15 @@ class Typesense_Posts_Index  extends Typesense_Index{
 		//return $shared_attributes;
 	}
 
+	function prefix_console_log_message( $message ) {
+
+		$message = htmlspecialchars( stripslashes( $message ) );
+		//Replacing Quotes, so that it does not mess up the script
+		$message = str_replace( '"', "-", $message );
+		$message = str_replace( "'", "-", $message );
+	
+		return "<script>console.log('{$message}')</script>";
+	}
 	/**
 	 * Get post shared attributes.
 	 *
@@ -205,12 +215,34 @@ class Typesense_Posts_Index  extends Typesense_Index{
 	private function get_post_shared_attributes( $post ) {
 		$shared_attributes                        = array();
 		$shared_attributes['post_id']             = (string)$post->ID;
-		//$shared_attributes['post_type']           = $post->post_type;
+		$shared_attributes['post_type']           = $post->post_type;
 		$shared_attributes['post_title']          = $post->post_title;
 		$shared_attributes['post_excerpt']        = apply_filters( 'the_excerpt', $post->post_excerpt ); // phpcs:ignore -- Legitimate use of Core hook.
 		$shared_attributes['post_date']           = (string)get_post_time( 'U', false, $post );
 		$shared_attributes['post_modified']       = (string)get_post_modified_time( 'U', false, $post );
 		$shared_attributes['comment_count']       = (int) $post->comment_count;
+
+		$val = (wp_list_pluck(wp_get_object_terms($post->ID,'category'),'name'));
+		$shared_attributes['category'] = (string)$val[0];
+		/*$taxonomy_objects = get_object_taxonomies( $post, 'objects' );
+		$i=1;
+		foreach ( $taxonomy_objects as $taxonomy ) {
+
+			$terms = wp_get_object_terms( $post->ID, $taxonomy->name );
+			//$terms = is_array( $terms ) ? $terms : array();
+
+
+			//$taxonomy_values = wp_list_pluck( $terms, 'name' );
+			$val = json_encode($terms);
+			if ( $i==2) {
+				$shared_attributes['category'] = (string)$val;
+			}
+			$i+=1;
+		}*/
+		//$val=get_object_taxonomies( $post->post_type,'objects' );
+		//$shared_attributes['category'] = (string)($val);
+
+		//$shared_attributes['category'] = 'diummy';
 		//$shared_attributes['menu_order']          = (int) $post->menu_order;
 /*
 		$author = get_userdata( $post->post_author );
@@ -225,7 +257,7 @@ class Typesense_Posts_Index  extends Typesense_Index{
 */
 		//$shared_attributes['images'] = Typesense_Utils::get_post_images( $post->ID );
 
-		//$shared_attributes['permalink']      = get_permalink( $post );
+		$shared_attributes['permalink']      = get_permalink( $post );
 		//$shared_attributes['post_mime_type'] = $post->post_mime_type;
 
 		// Push all taxonomies by default, including custom ones.
@@ -379,14 +411,14 @@ class Typesense_Posts_Index  extends Typesense_Index{
 	 * @param WP_Post $post    The post to update records for.
 	 * @param array   $records The records.
 	 */
-	private function update_post_records( WP_Post $post, array $records ) {
+	public function update_records( WP_Post $post, array $records ) {
 		// If there are no records, parent `update_records` will take care of the deletion.
 		// In case of posts, we ALWAYS need to delete existing records.
 		//if ( ! empty( $records ) ) {
 		//	$this->delete_item( $post );
 		//}
 
-		parent::update_records( $post, $records );
+		parent::update_post_records( $post, $records );
 
 		// Keep track of the new record count for future updates relying on the objectID's naming convention .
 		//$new_records_count = count( $records );
@@ -465,19 +497,6 @@ class Typesense_Posts_Index  extends Typesense_Index{
 	 *
 	 * @param mixed $item The item to delete.
 	 */
-	public function delete_item( $item ) {
-		$this->assert_is_supported( $item );
-
-		$records_count = $this->get_post_records_count( $item->ID );
-		$object_ids    = array();
-		for ( $i = 0; $i < $records_count; $i++ ) {
-			$object_ids[] = $this->get_post_object_id( $item->ID, $i );
-		}
-
-		if ( ! empty( $object_ids ) ) {
-			$this->get_index()->deleteObjects( $object_ids );
-		}
-	}
 
 	/**
 	 * Get post records count.
