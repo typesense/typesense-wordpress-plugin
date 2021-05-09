@@ -1,6 +1,6 @@
 <?php
 /**
- * WP Search With Algolia "Classmap" file.
+ * WP Search With Typesense "Classmap" file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -8,45 +8,51 @@
  * @package WebDevStudios\WPSWA
  */
 
-if ( ! defined( 'ALGOLIA_PATH' ) ) {
+if ( ! defined( 'TYPESENSE_PATH' ) ) {
 	exit();
 }
 
-// The Algolia Search PHP API SearchClient.
-if ( apply_filters( 'algolia_should_require_search_client', true ) ) {
-	require_once ALGOLIA_PATH . 'includes/libraries/algoliasearch-client-php/autoload.php';
-}
 
-require_once ALGOLIA_PATH . 'includes/factories/class-algolia-http-client-interface-factory.php';
-require_once ALGOLIA_PATH . 'includes/factories/class-algolia-search-client-factory.php';
-require_once ALGOLIA_PATH . 'includes/factories/class-algolia-plugin-factory.php';
+require_once TYPESENSE_PATH . 'includes/libraries/typesensesearch-client-php/vendor/autoload.php';
 
-require_once ALGOLIA_PATH . 'includes/class-algolia-api.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-autocomplete-config.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-compatibility.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-plugin.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-search.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-settings.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-template-loader.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-utils.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-styles.php';
-require_once ALGOLIA_PATH . 'includes/class-algolia-scripts.php';
 
-require_once ALGOLIA_PATH . 'includes/indices/class-algolia-index.php';
-require_once ALGOLIA_PATH . 'includes/indices/class-algolia-index-replica.php';
-require_once ALGOLIA_PATH . 'includes/indices/class-algolia-searchable-posts-index.php';
-require_once ALGOLIA_PATH . 'includes/indices/class-algolia-posts-index.php';
-require_once ALGOLIA_PATH . 'includes/indices/class-algolia-terms-index.php';
-require_once ALGOLIA_PATH . 'includes/indices/class-algolia-users-index.php';
+require_once TYPESENSE_PATH . 'includes/factories/class-typesense-plugin-factory.php';
 
-require_once ALGOLIA_PATH . 'includes/watchers/class-algolia-changes-watcher.php';
-require_once ALGOLIA_PATH . 'includes/watchers/class-algolia-post-changes-watcher.php';
-require_once ALGOLIA_PATH . 'includes/watchers/class-algolia-term-changes-watcher.php';
-require_once ALGOLIA_PATH . 'includes/watchers/class-algolia-user-changes-watcher.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-index.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-posts-index.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-terms-index.php';
 
+require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-changes-watcher.php';
+require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-post-changes-watcher.php';
+
+require_once TYPESENSE_PATH . 'includes/class-typesense-api.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-autocomplete-config.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-compatibility.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-plugin.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-search.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-settings.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-template-loader.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-utils.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-styles.php';
+require_once TYPESENSE_PATH . 'includes/class-typesense-scripts.php';
+/*
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-index.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-index-replica.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-searchable-posts-index.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-posts-index.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-terms-index.php';
+require_once TYPESENSE_PATH . 'includes/indices/class-typesense-users-index.php';
+*/
+
+/*
+require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-changes-watcher.php';
+require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-post-changes-watcher.php';
+require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-term-changes-watcher.php';
+require_once TYPESENSE_PATH . 'includes/watchers/class-typesense-user-changes-watcher.php';
+*/
 if ( is_admin() ) {
-	require_once ALGOLIA_PATH . 'includes/admin/class-algolia-admin.php';
-	require_once ALGOLIA_PATH . 'includes/admin/class-algolia-admin-page-autocomplete.php';
-	require_once ALGOLIA_PATH . 'includes/admin/class-algolia-admin-page-native-search.php';
-	require_once ALGOLIA_PATH . 'includes/admin/class-algolia-admin-page-settings.php';
+	require_once TYPESENSE_PATH . 'includes/admin/class-typesense-admin.php';
+	require_once TYPESENSE_PATH . 'includes/admin/class-typesense-admin-page-autocomplete.php';
+	require_once TYPESENSE_PATH . 'includes/admin/class-typesense-admin-page-native-search.php';
+	require_once TYPESENSE_PATH . 'includes/admin/class-typesense-admin-page-settings.php';
 }

@@ -36,12 +36,6 @@
 
 		$.post(
 			ajaxurl, data, function(response) {
-				if (typeof response.success === 'undefined') {
-					alert( 'An error occurred' );
-					enableButton( $clickedButton );
-					return;
-				}
-
 				alert( 'Settings correctly pushed for index: ' + index );
 				enableButton( $clickedButton );
 			}

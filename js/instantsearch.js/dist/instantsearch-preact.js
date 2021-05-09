@@ -8634,6 +8634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 54 */
 /***/ function(module, exports) {
 
+<<<<<<< HEAD
 	module.exports = function(module) {
 		if(!module.webpackPolyfill) {
 			module.deprecate = function() {};
@@ -8644,6 +8645,18 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 		return module;
 	}
+=======
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+>>>>>>> 166b5f2155c2ca82bc753bc9391d1a3f95402c15
 
 
 /***/ },

@@ -71,11 +71,6 @@
 	vertical-align: middle;
 }
 
-.ais-stats {
-	position: absolute;
-	top: 60px;
-	font-size: 14px;
-}
 
 .ais-hits--item {
 	/* hit item */
@@ -107,6 +102,36 @@
 
 .ais-pagination {
 	margin: 0;
+}
+
+
+/*own*/
+
+
+
+.ais-Menu-count{
+	background : #FBAE00;
+	margin-left: 5px;
+	border-radius: 25px;
+	height: auto;
+	width: auto;
+}
+
+.ais-Menu-item--selected {
+    font-weight: 700;
+}
+
+.ais-SearchBox-submit{
+	display: none;
+}
+
+.ais-SearchBox-reset{
+	display: none;
+}
+
+.ais-Pagination-item{
+	display: inline;
+	margin-left: 25px;
 }
 
 .ais-pagination--item {
