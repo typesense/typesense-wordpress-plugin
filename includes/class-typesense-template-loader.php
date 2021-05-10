@@ -53,6 +53,15 @@ class Typesense_Template_Loader {
 		// Listen for native templates to override.
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 
+
+		add_filter( 'wp_enqueue_scripts', array( $this, 'enqueue_autocomplete_scripts' ) );
+
+		if ( true === $in_footer ) {
+			add_filter( 'wp_footer', array( $this, 'load_autocomplete_template' ) );
+		} else {
+			add_filter( 'wp_head', array( $this, 'load_autocomplete_template' ) );
+		}
+
 		// autocomplete features to be added
 		/*
 		if ( $this->should_load_autocomplete() ) {
@@ -82,10 +91,10 @@ class Typesense_Template_Loader {
 			'port'     => $settings->get_port(),
 			'host'     => $settings->get_host(),
 			'query'              => get_search_query(),
-			//'autocomplete'       => array(
-			//	'sources'        => $autocomplete_config->get_config(),
-			//	'input_selector' => (string) apply_filters( 'algolia_autocomplete_input_selector', "input[name='s']:not('.no-autocomplete')" ),
-			//),
+			'autocomplete'       => array(
+				'sources'        => [0],//$autocomplete_config->get_config(),
+				'input_selector' => "input[name='s']:not('.no-autocomplete')",//(string) apply_filters( 'algolia_autocomplete_input_selector', "input[name='s']:not('.no-autocomplete')" ),
+			),
 			'indices'            => array(),
 		);
 
@@ -138,6 +147,10 @@ class Typesense_Template_Loader {
 		wp_enqueue_script( 'algolia-autocomplete' );
 		wp_enqueue_script( 'algolia-autocomplete-noconflict' );
 
+
+		wp_enqueue_script( 'typesense-js' );
+		wp_enqueue_script( 'typesense-min-js' );
+		//wp_enqueue_script( 'typesense-min-js-map' );
 		// Allow users to easily enqueue custom styles and scripts.
 		do_action( 'algolia_autocomplete_scripts' );
 	}

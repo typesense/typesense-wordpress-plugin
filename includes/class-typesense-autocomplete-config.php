@@ -156,21 +156,21 @@ class Typesense_Autocomplete_Config {
 	public function get_config() {
 		$settings = $this->plugin->get_settings();
 		$config   = $settings->get_autocomplete_config();
-		foreach ( $config as $key => &$entry ) {
-			if ( ! isset( $entry['index_id'] ) ) {
-				unset( $config[ $key ] );
-				continue;
-			}
+		//foreach ( $config as $key => &$entry ) {
+		//	if ( ! isset( $entry['index_id'] ) ) {
+		//		unset( $config[ $key ] );
+		//		continue;
+		//	}
 ////////////////////////////////////////////changes here
-			$index = $this->plugin->get_index( $entry['index_id'] );
+/*			$index = $this->plugin->get_index( $entry['index_id'] );
 			if ( null === $index ) {
 				unset( $config[ $key ] );
 				continue;
-			}
+			}*/
 ////////////////////////////////////////////changes here
-			$entry['index_name'] = $index->get_name();
-			$entry['enabled']    = true;
-		}
+			//$entry['index_name'] = $index->get_name();
+			//$entry['enabled']    = true;
+		//}
 
 		$config = (array) apply_filters( '_autocomplete_config', $config );
 

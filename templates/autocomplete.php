@@ -10,6 +10,7 @@
 
 ?>
 
+
 <script type="text/html" id="tmpl-autocomplete-header">
 	<div class="autocomplete-header">
 		<div class="autocomplete-header-title">{{{ data.label }}}</div>
@@ -18,21 +19,16 @@
 </script>
 
 <script type="text/html" id="tmpl-autocomplete-post-suggestion">
-	<a class="suggestion-link" href="{{ data.permalink }}" title="{{ data.post_title }}">
-		<# if ( data.images.thumbnail ) { #>
-			<img class="suggestion-post-thumbnail" src="{{ data.images.thumbnail.url }}" alt="{{ data.post_title }}">
-		<# } #>
+	<a class="suggestion-link" href="{{ data.document.permalink }}" title="{{ data.document.post_title }}">
 		<div class="suggestion-post-attributes">
-			<span class="suggestion-post-title">{{{ data._highlightResult.post_title.value }}}</span>
-				<# if ( data._snippetResult['content'] ) { #>
-					<span class="suggestion-post-content">{{{ data._snippetResult['content'].value }}}</span>
-				<# } #>
+			<span class="suggestion-post-title">{{{ data.document.post_title }}}</span>
+			<span class="suggestion-post-content">{{{ data.document.post_content }}}</span>
 		</div>
 	</a>
 </script>
 
 <script type="text/html" id="tmpl-autocomplete-term-suggestion">
-	<a class="suggestion-link" href="{{ data.permalink }}" title="{{ data.name }}">
+	<a class="suggestion-link" href="{{ data.document.permalink }}" title="{{ data.document.name }}">
 		<svg viewBox="0 0 21 21" width="21" height="21">
 			<svg width="21" height="21" viewBox="0 0 21 21">
 				<path
@@ -40,7 +36,7 @@
 					fill-rule="evenodd"></path>
 			</svg>
 		</svg>
-		<span class="suggestion-post-title">{{{ data._highlightResult.name.value }}}</span>
+		<span class="suggestion-post-title">{{{ data.document.name }}}</span>
 	</a>
 </script>
 
@@ -58,7 +54,7 @@
 		<div class="autocomplete-footer-branding">
 			<a href="#" class="algolia-powered-by-link" title="Algolia">
 				<svg width="130" viewBox="0 0 130 18" xmlns="http://www.w3.org/2000/svg">
-					<title>Search by Algolia</title>
+					<title>Search by Typesense</title>
 					<defs>
 						<linearGradient x1="-36.868%" y1="134.936%" x2="129.432%" y2="-27.7%" id="a">
 							<stop stop-color="#00AEFF" offset="0%"/>
@@ -66,9 +62,7 @@
 						</linearGradient>
 					</defs>
 					<g fill="none" fill-rule="evenodd">
-						<path
-							d="M59.399.022h13.299a2.372 2.372 0 0 1 2.377 2.364V15.62a2.372 2.372 0 0 1-2.377 2.364H59.399a2.372 2.372 0 0 1-2.377-2.364V2.381A2.368 2.368 0 0 1 59.399.022z"
-							fill="url(#a)"/>
+						<path d="M../19822348.png"/>
 						<path
 							d="M66.257 4.56c-2.815 0-5.1 2.272-5.1 5.078 0 2.806 2.284 5.072 5.1 5.072 2.815 0 5.1-2.272 5.1-5.078 0-2.806-2.279-5.072-5.1-5.072zm0 8.652c-1.983 0-3.593-1.602-3.593-3.574 0-1.972 1.61-3.574 3.593-3.574 1.983 0 3.593 1.602 3.593 3.574a3.582 3.582 0 0 1-3.593 3.574zm0-6.418v2.664c0 .076.082.131.153.093l2.377-1.226c.055-.027.071-.093.044-.147a2.96 2.96 0 0 0-2.465-1.487c-.055 0-.11.044-.11.104l.001-.001zm-3.33-1.956l-.312-.311a.783.783 0 0 0-1.106 0l-.372.37a.773.773 0 0 0 0 1.101l.307.305c.049.049.121.038.164-.011.181-.245.378-.479.597-.697.225-.223.455-.42.707-.599.055-.033.06-.109.016-.158h-.001zm5.001-.806v-.616a.781.781 0 0 0-.783-.779h-1.824a.78.78 0 0 0-.783.779v.632c0 .071.066.12.137.104a5.736 5.736 0 0 1 1.588-.223c.52 0 1.035.071 1.534.207a.106.106 0 0 0 .131-.104z"
 							fill="#FFF"/>
@@ -95,35 +89,69 @@
 <script type="text/javascript">
 	jQuery( function () {
 		/* init Algolia client */
-		var client = algoliasearch( algolia.application_id, algolia.search_api_key );
+		var client = algoliasearch( 'Q5G8AECRFT','e9b3777b0acb47576788d7a4f9bb7927');
+
+		let client1 = new Typesense.Client({
+		'nodes': [{
+			'host': 'localhost', // For Typesense Cloud use xxx.a1.typesense.net
+			'port': '8108',      // For Typesense Cloud use 443
+			'protocol': 'http'   // For Typesense Cloud use https
+		}],
+		'apiKey': '123',
+		'connectionTimeoutSeconds': 2
+		});
 
 		/* setup default sources */
 		var sources = [];
 		jQuery.each( algolia.autocomplete.sources, function ( i, config ) {
-			var suggestion_template = wp.template( config[ 'tmpl_suggestion' ] );
+			var suggestion_template = wp.template(  'autocomplete-post-suggestion' );
+			/*let q = {
+						'q'        : '',
+						'query_by'  : 'post_title'
+					};
+					client1.collections('posts')
+					.documents()
+					.search(q)
+					.then(function (searchResults) {
+						console.log(searchResults)
+					})*/
 			sources.push( {
-				source: algoliaAutocomplete.sources.hits( client.initIndex( config[ 'index_name' ] ), {
-					hitsPerPage: config[ 'max_suggestions' ],
-					attributesToSnippet: [
-						'content:10'
-					],
-					highlightPreTag: '__ais-highlight__',
-					highlightPostTag: '__/ais-highlight__'
-				} ),
+				source: function(query, callback) {
+					let quid = {
+						'q'        : query,
+						'query_by'  : 'post_title,post_content'
+					};
+
+					/*client1.collections('posts')
+					.documents()
+					.search(quid)
+					.then(function (searchResults) {
+						//console.log(searchResults)
+						return searchResults;
+					})*/
+					//console.log(qu);
+
+					client1.collections('posts')
+					.documents()
+					.search(quid)
+					.then(function (searchResults) {
+						//console.log(searchResults);
+						callback(searchResults.hits);
+					})
+				},
 				templates: {
 					header: function () {
 						return wp.template( 'autocomplete-header' )( {
-							label: _.escape( config[ 'label' ] )
+							label: _.escape( 'Posts')//config[ 'label' ] )
 						} );
 					},
 					suggestion: function ( hit ) {
-						if ( hit.escaped === true ) {
+						console.log(hit);
+						if ( hit.length != 0 ) {
 							return suggestion_template( hit );
 						}
-						hit.escaped = true;
-
-						for ( var key in hit._highlightResult ) {
-							/* We do not deal with arrays. */
+						/*for ( var key in hit._highlightResult ) {
+							// We do not deal with arrays. 
 							if ( typeof hit._highlightResult[ key ].value !== 'string' ) {
 								continue;
 							}
@@ -132,16 +160,89 @@
 						}
 
 						for ( var key in hit._snippetResult ) {
-							/* We do not deal with arrays. */
+							// We do not deal with arrays. 
 							if ( typeof hit._snippetResult[ key ].value !== 'string' ) {
 								continue;
 							}
 
 							hit._snippetResult[ key ].value = _.escape( hit._snippetResult[ key ].value );
 							hit._snippetResult[ key ].value = hit._snippetResult[ key ].value.replace( /__ais-highlight__/g, '<em>' ).replace( /__\/ais-highlight__/g, '</em>' );
+						}*/
+
+						//return suggestion_template( hit );
+					}
+				}
+			} );
+
+		} );
+
+		jQuery.each( algolia.autocomplete.sources, function ( i, config ) {
+			var suggestion_template = wp.template(  'autocomplete-term-suggestion' );
+			/*let q = {
+						'q'        : '',
+						'query_by'  : 'post_title'
+					};
+					client1.collections('posts')
+					.documents()
+					.search(q)
+					.then(function (searchResults) {
+						console.log(searchResults)
+					})*/
+			sources.push( {
+				source: function(query, callback) {
+					let quid = {
+						'q'        : query,
+						'query_by'  : 'name'
+					};
+
+					/*client1.collections('posts')
+					.documents()
+					.search(quid)
+					.then(function (searchResults) {
+						//console.log(searchResults)
+						return searchResults;
+					})*/
+					//console.log(qu);
+
+					client1.collections('terms')
+					.documents()
+					.search(quid)
+					.then(function (searchResults) {
+						//console.log(searchResults);
+						callback(searchResults.hits);
+					})
+				},
+				templates: {
+					header: function () {
+						return wp.template( 'autocomplete-header' )( {
+							label: _.escape( 'Categories')//config[ 'label' ] )
+						} );
+					},
+					suggestion: function ( hit ) {
+						console.log(hit);
+						if ( hit.length != 0 ) {
+							return suggestion_template( hit );
+						}
+						/*for ( var key in hit._highlightResult ) {
+							// We do not deal with arrays. 
+							if ( typeof hit._highlightResult[ key ].value !== 'string' ) {
+								continue;
+							}
+							hit._highlightResult[ key ].value = _.escape( hit._highlightResult[ key ].value );
+							hit._highlightResult[ key ].value = hit._highlightResult[ key ].value.replace( /__ais-highlight__/g, '<em>' ).replace( /__\/ais-highlight__/g, '</em>' );
 						}
 
-						return suggestion_template( hit );
+						for ( var key in hit._snippetResult ) {
+							// We do not deal with arrays. 
+							if ( typeof hit._snippetResult[ key ].value !== 'string' ) {
+								continue;
+							}
+
+							hit._snippetResult[ key ].value = _.escape( hit._snippetResult[ key ].value );
+							hit._snippetResult[ key ].value = hit._snippetResult[ key ].value.replace( /__ais-highlight__/g, '<em>' ).replace( /__\/ais-highlight__/g, '</em>' );
+						}*/
+
+						//return suggestion_template( hit );
 					}
 				}
 			} );
@@ -153,7 +254,7 @@
 			var $searchInput = jQuery( this );
 
 			var config = {
-				debug: algolia.debug,
+				//debug: algolia.debug,
 				hint: false,
 				openOnFocus: true,
 				appendTo: 'body',
@@ -162,9 +263,9 @@
 				}
 			};
 
-			if ( algolia.powered_by_enabled ) {
+			//if ( algolia.powered_by_enabled ) {
 				config.templates.footer = wp.template( 'autocomplete-footer' );
-			}
+			//}
 
 			/* Instantiate autocomplete.js */
 			var autocomplete = algoliaAutocomplete( $searchInput[ 0 ], config, sources )
@@ -187,4 +288,15 @@
 			window.location = "https://www.algolia.com/?utm_source=WordPress&utm_medium=extension&utm_content=" + window.location.hostname + "&utm_campaign=poweredby";
 		} );
 	} );
+
+/*
+algoliaAutocomplete.sources.hits( client.initIndex( 'wp_dummysearchable_posts' ), {
+					hitsPerPage: 5,//config[ 'max_suggestions' ],
+					attributesToSnippet: [
+						'content:10'
+					],
+					highlightPreTag: '__ais-highlight__',
+					highlightPostTag: '__/ais-highlight__'
+				} )
+*/
 </script>

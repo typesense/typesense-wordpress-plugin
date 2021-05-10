@@ -51,7 +51,7 @@ class Typesense_Scripts {
 //Typesense scripts
 	wp_register_script(
 		'typesense-js',
-		TYPESENSE_PLUGIN_URL . 'js/typesense-js-master/dist/typesense.js',
+		TYPESENSE_PLUGIN_URL . 'js/typesense-js/dist/typesense.js',
 		[
 			'jquery',
 			'underscore',
@@ -63,7 +63,7 @@ class Typesense_Scripts {
 
 	wp_register_script(
 		'typesense-min-js',
-		TYPESENSE_PLUGIN_URL . 'js/typesense-js-master/dist/typesense.min.js',
+		TYPESENSE_PLUGIN_URL . 'js/typesense-js/dist/typesense.min.js',
 		[
 			'jquery',
 			'underscore',
@@ -75,7 +75,7 @@ class Typesense_Scripts {
 
 	wp_register_script(
 		'typesense-min-js-map',
-		TYPESENSE_PLUGIN_URL . 'js/typesense-js-master/dist/typesense.min.js.map',
+		TYPESENSE_PLUGIN_URL . 'js/typesense-js/dist/typesense.min.js.map',
 		[
 			'jquery',
 			'underscore',
@@ -141,19 +141,5 @@ class Typesense_Scripts {
 			TYPESENSE_VERSION,
 			$in_footer
 		);
-
-		wp_register_script(
-			'dummy',
-			TYPESENSE_PLUGIN_URL . 'js/dummy.js',
-			[
-				'jquery',
-				'underscore',
-				'wp-util',
-			],
-			TYPESENSE_VERSION,
-			$in_footer
-		);
-
-		wp_enqueue_script( 'dummy' );
 	}
 }
