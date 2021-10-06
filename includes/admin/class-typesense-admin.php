@@ -72,7 +72,7 @@ class Typesense_Admin {
 			'typesense-admin-reindex-button',
 			plugin_dir_url( __FILE__ ) . 'js/reindex-button.js',
 			array( 'jquery' ),
-			ALGOLIA_VERSION,
+            TYPESENSE_VERSION,
 			false
 		);
 		wp_localize_script( 'ajax-script', 'ajax_object',

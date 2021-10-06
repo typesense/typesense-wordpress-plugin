@@ -84,7 +84,15 @@ class Typesense_API {
 		$host			= (string)$this->settings->get_host();
 		$port			= (string)$this->settings->get_port();
 
-		$this->client = new Client(
+        if (
+            empty( $api_key ) ||
+            empty( $host )
+        ) {
+            return null;
+        }
+
+
+        $this->client = new Client(
 			[
 			  'api_key'         => $api_key,
 			  'nodes'           => [
