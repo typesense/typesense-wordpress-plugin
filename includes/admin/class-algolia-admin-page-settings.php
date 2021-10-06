@@ -1,6 +1,6 @@
 <?php
 /**
- * Typesense_Admin_Page_Settings class file.
+ * Algolia_Admin_Page_Settings class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,11 +9,11 @@
  */
 
 /**
- * Class Typesense_Admin_Page_Settings
+ * Class Algolia_Admin_Page_Settings
  *
  * @since 1.0.0
  */
-class Typesense_Admin_Page_Settings {
+class Algolia_Admin_Page_Settings {
 
 	/**
 	 * Admin page slug.
@@ -66,7 +66,7 @@ class Typesense_Admin_Page_Settings {
 	private $plugin;
 
 	/**
-	 * Typesense_Admin_Page_Settings constructor.
+	 * Algolia_Admin_Page_Settings constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -96,7 +96,8 @@ class Typesense_Admin_Page_Settings {
 	 */
 	public function add_action_links( array $links ) {
 		return array_merge(
-			$links, array(
+			$links,
+            array(
 				'<a href="' . esc_url( admin_url( 'admin.php?page=' . $this->slug ) ) . '">' . esc_html__( 'Settings', 'wp-search-with-typesense' ) . '</a>',
 			)
 		);
@@ -191,10 +192,10 @@ class Typesense_Admin_Page_Settings {
 		$settings      = $this->plugin->get_settings();
 		$setting       = $settings->get_application_id();
 		$disabled_html = $settings->is_application_id_in_config() ? ' disabled' : '';
-?>
+        ?>
 		<input type="text" name="typesense_application_id" class="regular-text" value="<?php echo esc_attr( $setting ); ?>" <?php echo esc_html( $disabled_html ); ?>/>
 		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense Application ID.', 'wp-search-with-typesense' ); ?></p>
-<?php
+        <?php
 	}
 
 	/**
@@ -208,10 +209,10 @@ class Typesense_Admin_Page_Settings {
 		$setting       = $settings->get_search_api_key();
 		$disabled_html = $settings->is_search_api_key_in_config() ? ' disabled' : '';
 
-?>
+        ?>
 		<input type="text" name="typesense_search_api_key" class="regular-text" value="<?php echo esc_attr( $setting ); ?>" <?php echo esc_html( $disabled_html ); ?>/>
 		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense Search-only API key (public).', 'wp-search-with-typesense' ); ?></p>
-<?php
+        <?php
 	}
 
 	public function host_callback() {
@@ -241,10 +242,10 @@ class Typesense_Admin_Page_Settings {
 	public function api_key_callback() {
 		$settings      = $this->plugin->get_settings();
 		$setting       = $settings->get_api_key();
-?>
+        ?>
 		<input type="text" name="typesense_api_key" class="regular-text" value="<?php echo esc_attr( $setting ); ?>"/>
-		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense API key.', 'wp-search-with-typesense' ); ?></p>
-<?php
+		<p class="description" id="home-description"><?php esc_html_e( 'Your Typesense ADMIN API key (kept private).', 'wp-search-with-typesense' ); ?></p>
+        <?php
 	}
 
 	/**
@@ -257,10 +258,10 @@ class Typesense_Admin_Page_Settings {
 		$settings          = $this->plugin->get_settings();
 		$index_name_prefix = $settings->get_index_name_prefix();
 		$disabled_html     = $settings->is_index_name_prefix_in_config() ? ' disabled' : '';
-?>
+        ?>
 		<input type="text" name="typesense_index_name_prefix" value="<?php echo esc_attr( $index_name_prefix ); ?>" <?php echo esc_html( $disabled_html ); ?>/>
 		<p class="description" id="home-description"><?php esc_html_e( 'This prefix will be prepended to your index names.', 'wp-search-with-typesense' ); ?></p>
-<?php
+        <?php
 	}
 
 	/**

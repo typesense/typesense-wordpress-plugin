@@ -1,6 +1,6 @@
 <?php
 /**
- * Typesense_Admin_Page_Autocomplete class file.
+ * Algolia_Admin_Page_Autocomplete class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,11 +9,11 @@
  */
 
 /**
- * Class Typesense_Admin_Page_Autocomplete
+ * Class Algolia_Admin_Page_Autocomplete
  *
  * @since 1.0.0
  */
-class Typesense_Admin_Page_Autocomplete {
+class Algolia_Admin_Page_Autocomplete {
 
 	/**
 	 * Admin page slug.
@@ -75,7 +75,7 @@ class Typesense_Admin_Page_Autocomplete {
 	private $autocomplete_config;
 
 	/**
-	 * Typesense_Admin_Page_Autocomplete constructor.
+	 * Algolia_Admin_Page_Autocomplete constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -173,9 +173,9 @@ class Typesense_Admin_Page_Autocomplete {
 		$indices  = $this->autocomplete_config->get_form_data();
 		$checked  = 'yes' === $value ? 'checked ' : '';
 		$disabled = empty( $indices ) ? 'disabled ' : '';
-?>
+		?>
 		<input type='checkbox' name='typesense_autocomplete_enabled' value='yes' <?php echo esc_html( $checked . ' ' . $disabled ); ?>/>
-<?php
+		<?php
 	}
 
 	/**

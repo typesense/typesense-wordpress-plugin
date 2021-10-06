@@ -37,21 +37,14 @@ class Typesense_Styles {
 			'algolia-autocomplete',
 			TYPESENSE_PLUGIN_URL . 'css/algolia-autocomplete.css',
 			[],
-			TYPESENSE_VERSION
-		);
-
-		wp_register_style(
-			'algolia-instantsearch-native',
-			TYPESENSE_PLUGIN_URL . 'css/algolia-instantsearch.css',
-			[],
-			TYPESENSE_VERSION
+            TYPESENSE_VERSION
 		);
 
 		wp_register_style(
 			'algolia-instantsearch',
 			'https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css',
 			[],
-			TYPESENSE_VERSION
+            TYPESENSE_VERSION
 		);
 	}
 }

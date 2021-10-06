@@ -1,6 +1,6 @@
 <?php
 /**
- * Typesense_Posts_Index class file.
+ * Algolia_Posts_Index class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,13 +9,13 @@
  */
 
 /**
- * Class Typesense_Posts_Index
+ * Class Algolia_Posts_Index
  *
  * @since 1.0.0
  */
 use Typesense\Client;
 
-class Typesense_Posts_Index  extends Typesense_Index{
+class Algolia_Posts_Index  extends Algolia_Index{
 
 	/**
 	 * The post type.
@@ -38,7 +38,7 @@ class Typesense_Posts_Index  extends Typesense_Index{
 	protected $contains_only = 'posts';
 
 	/**
-	 * Typesense_Posts_Index constructor.
+	 * Algolia_Posts_Index constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0

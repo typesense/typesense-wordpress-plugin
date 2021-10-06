@@ -18,12 +18,12 @@ use Typesense\Client;
 class Typesense_Post_Changes_Watcher implements Typesense_Changes_Watcher {
 
 	/**
-	 * Typesense_Index instance.
+	 * Algolia_Index instance.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @var Typesense_Index
+	 * @var Algolia_Index
 	 */
 	private $index;
 
@@ -43,9 +43,9 @@ class Typesense_Post_Changes_Watcher implements Typesense_Changes_Watcher {
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @param Typesense_Index $index Typesense_Index instance.
+	 * @param Algolia_Index $index Algolia_Index instance.
 	 */
-	public function __construct( Typesense_Index $index ) {
+	public function __construct( Algolia_Index $index ) {
 		$this->index = $index;
 	}
 

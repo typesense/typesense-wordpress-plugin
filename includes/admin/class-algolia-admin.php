@@ -1,6 +1,6 @@
 <?php
 /**
- * Typesense_Admin class file.
+ * Algolia_Admin class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,13 +9,13 @@
  */
 
 /**
- * Class Typesense_Admin
+ * Class Algolia_Admin
  *
  * @since 1.0.0
  */
 
-use Typesense\Client; 
-class Typesense_Admin {
+use Typesense\Client;
+class Algolia_Admin {
 
 	/**
 	 * The Typesense Plugin.
@@ -27,7 +27,7 @@ class Typesense_Admin {
 	private $plugin;
 
 	/**
-	 * Typesense_Admin constructor.
+	 * Algolia_Admin constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
@@ -41,12 +41,19 @@ class Typesense_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		$api = $plugin->get_api();
-		new Typesense_Admin_Page_Autocomplete( $plugin->get_settings(), $plugin->get_autocomplete_config());
-		new Typesense_Admin_Page_Native_Search( $plugin );
+		new Algolia_Admin_Page_Autocomplete( $plugin->get_settings(), $plugin->get_autocomplete_config());
+		new Algolia_Admin_Page_Native_Search( $plugin );
 
 		add_action( 'wp_ajax_typesense_re_index', array( $this, 're_index' ) );
 
-		new Typesense_Admin_Page_Settings( $plugin );
+        $maybe_get_page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_STRING );
+        if ( ! empty( $maybe_get_page ) && 'algolia' === substr( $maybe_get_page, 0, 7 ) ) {
+            add_action( 'admin_notices', array( $this, 'display_reindexing_notices' ) );
+        }
+
+		new Algolia_Admin_Template_Notices();
+
+		new Algolia_Admin_Page_Settings( $plugin );
 
 		add_action( 'admin_notices', array( $this, 'display_unmet_requirements_notices' ) );
 	}
@@ -192,7 +199,7 @@ class Typesense_Admin {
 	 * @throws Exception If index ID or page are not provided, or index name dies not exist.
 	 */
 	public function re_index() {
-				
+
 		$index_id = $_GET['index'];
 		$document = [
 			'post_id' => '1',
@@ -201,11 +208,11 @@ class Typesense_Admin {
 			'post_title' => 'Dummy text 2',
 			'post_excerpt' => 'dcd',
 			'is_sticky' => 1,
-		
+
 			'post_modified' => 'fwecfwe',
 			'post_date' => 'cwe',
-		
-			'comment_count' => 2,	
+
+			'comment_count' => 2,
 		];
 		$indices = $this->plugin->get_indices();
 		try{

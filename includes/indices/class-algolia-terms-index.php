@@ -1,6 +1,6 @@
 <?php
 /**
- * Typesense_Terms_Index class file.
+ * Algolia_Terms_Index class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,11 +9,11 @@
  */
 
 /**
- * Class Typesense_Terms_Index
+ * Class Algolia_Terms_Index
  *
  * @since 1.0.0
  */
-final class Typesense_Terms_Index extends Typesense_Index {
+final class Algolia_Terms_Index extends Algolia_Index {
 
 	/**
 	 * What this index contains.
@@ -36,7 +36,7 @@ final class Typesense_Terms_Index extends Typesense_Index {
 	private $taxonomy;
 
 	/**
-	 * Typesense_Terms_Index constructor.
+	 * Algolia_Terms_Index constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0

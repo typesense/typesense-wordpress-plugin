@@ -37,9 +37,13 @@ class Typesense_Scripts {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
+		$ais_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
+			? '.development'
+			: '.production';
+
 		wp_register_script(
 			'algolia-search',
-			TYPESENSE_PLUGIN_URL . 'js/algoliasearch/dist/algoliasearch.jquery' . $suffix . '.js',
+            TYPESENSE_PLUGIN_URL . 'js/algoliasearch/dist/algoliasearch-lite.umd.js',
 			[
 				'jquery',
 				'underscore',
@@ -115,6 +119,7 @@ class Typesense_Scripts {
 				'jquery',
 				'underscore',
 				'wp-util',
+				'algolia-search',
 			],
 			TYPESENSE_VERSION,
 			$in_footer
@@ -132,11 +137,12 @@ class Typesense_Scripts {
 
 		wp_register_script(
 			'algolia-instantsearch',
-			'https://cdn.jsdelivr.net/npm/instantsearch.js@4.5.0',
+			ALGOLIA_PLUGIN_URL . 'js/instantsearch.js/dist/instantsearch' . $ais_suffix . $suffix . '.js',
 			[
 				'jquery',
 				'underscore',
 				'wp-util',
+				'algolia-search',
 			],
 			TYPESENSE_VERSION,
 			$in_footer

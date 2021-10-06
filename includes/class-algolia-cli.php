@@ -105,12 +105,12 @@ class Typesense_CLI extends \WP_CLI_Command {
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @param Typesense_Index $index Typesense_Index instance.
+	 * @param Algolia_Index $index Algolia_Index instance.
 	 * @param bool          $clear Clear all existing records prior to pushing the records.
 	 *
 	 * @return void
 	 */
-	private function do_reindex( Typesense_Index $index, $clear ) {
+	private function do_reindex( Algolia_Index $index, $clear ) {
 
 		if ( $clear ) {
 			/* translators: the placeholder will contain the name of the index. */

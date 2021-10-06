@@ -57,7 +57,7 @@ class Typesense_Autocomplete_Config {
 		 * @author WebDevStudios <contact@webdevstudios.com>
 		 * @since  1.0.0
 		 *
-		 * @var Typesense_Index $index
+		 * @var Algolia_Index $index
 		 */
 		foreach ( $indices as $index ) {
 			$index_config = $this->extract_index_config( $existing_config, $index->get_id() );
@@ -74,7 +74,8 @@ class Typesense_Autocomplete_Config {
 		}
 
 		usort(
-			$config, function( $a, $b ):int {
+			$config,
+            function( $a, $b ):int {
 				return $a['position'] <=> $b['position'];
 			}
 		);
@@ -176,14 +177,16 @@ class Typesense_Autocomplete_Config {
 
 		// Remove manually disabled indices.
 		$config = array_filter(
-			$config, function( $item ) {
+			$config,
+			function( $item ) {
 				return (bool) $item['enabled'];
 			}
 		);
 
 		// Sort the indices.
 		usort(
-			$config, function( $a, $b ):int {
+			$config,
+			function( $a, $b ):int {
 				return $a['position'] <=> $b['position'];
 			}
 		);

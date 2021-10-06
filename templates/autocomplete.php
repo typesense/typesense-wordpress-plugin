@@ -5,6 +5,7 @@
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
  *
+ * @version 2.0.0
  * @package WebDevStudios\WPSWA
  */
 
@@ -22,7 +23,9 @@
 	<a class="suggestion-link" href="{{ data.document.permalink }}" title="{{ data.document.post_title }}">
 		<div class="suggestion-post-attributes">
 			<span class="suggestion-post-title">{{{ data.document.post_title }}}</span>
-			<span class="suggestion-post-content">{{{ data.document.post_content }}}</span>
+			<# if ( data.document.post_content ) { #>
+				<span class="suggestion-post-content">{{{ data.document.post_content }}}</span>
+			<# } #>
 		</div>
 	</a>
 </script>
@@ -88,10 +91,10 @@
 
 <script type="text/javascript">
 	jQuery( function () {
-		/* init Algolia client */
-		var client = algoliasearch( 'Q5G8AECRFT','e9b3777b0acb47576788d7a4f9bb7927');
+		/* Initialize Algolia client */
+		var client = algoliasearch( algolia.application_id, algolia.search_api_key );
 
-		let client1 = new Typesense.Client({
+        let client1 = new Typesense.Client({
 		'nodes': [{
 			'host': 'localhost', // For Typesense Cloud use xxx.a1.typesense.net
 			'port': '8108',      // For Typesense Cloud use 443
@@ -101,7 +104,28 @@
 		'connectionTimeoutSeconds': 2
 		});
 
-		/* setup default sources */
+		/**
+		 * Algolia hits source method.
+		 *
+		 * This method defines a custom source to use with autocomplete.js.
+		 *
+		 * @param object $index Algolia index object.
+		 * @param object $params Options object to use in search.
+		 */
+		var algoliaHitsSource = function( index, params ) {
+			return function( query, callback ) {
+				index
+					.search( query, params )
+					.then( function( response ) {
+						callback( response.hits, response );
+					})
+					.catch( function( error ) {
+						callback( [] );
+					});
+			}
+		}
+
+		/* Setup autocomplete.js sources */
 		var sources = [];
 		jQuery.each( algolia.autocomplete.sources, function ( i, config ) {
 			var suggestion_template = wp.template(  'autocomplete-post-suggestion' );
@@ -116,6 +140,14 @@
 						console.log(searchResults)
 					})*/
 			sources.push( {
+				// source: algoliaHitsSource( client.initIndex( config[ 'index_name' ] ), {
+				// 	hitsPerPage: config[ 'max_suggestions' ],
+				// 	attributesToSnippet: [
+				// 		'content:10'
+				// 	],
+				// 	highlightPreTag: '__ais-highlight__',
+				// 	highlightPostTag: '__/ais-highlight__'
+				// } ),
 				source: function(query, callback) {
 					let quid = {
 						'q'        : query,
@@ -151,7 +183,7 @@
 							return suggestion_template( hit );
 						}
 						/*for ( var key in hit._highlightResult ) {
-							// We do not deal with arrays. 
+							// We do not deal with arrays.
 							if ( typeof hit._highlightResult[ key ].value !== 'string' ) {
 								continue;
 							}
@@ -160,7 +192,7 @@
 						}
 
 						for ( var key in hit._snippetResult ) {
-							// We do not deal with arrays. 
+							// We do not deal with arrays.
 							if ( typeof hit._snippetResult[ key ].value !== 'string' ) {
 								continue;
 							}
@@ -224,7 +256,7 @@
 							return suggestion_template( hit );
 						}
 						/*for ( var key in hit._highlightResult ) {
-							// We do not deal with arrays. 
+							// We do not deal with arrays.
 							if ( typeof hit._highlightResult[ key ].value !== 'string' ) {
 								continue;
 							}
@@ -233,7 +265,7 @@
 						}
 
 						for ( var key in hit._snippetResult ) {
-							// We do not deal with arrays. 
+							// We do not deal with arrays.
 							if ( typeof hit._snippetResult[ key ].value !== 'string' ) {
 								continue;
 							}
@@ -288,15 +320,4 @@
 			window.location = "https://www.algolia.com/?utm_source=WordPress&utm_medium=extension&utm_content=" + window.location.hostname + "&utm_campaign=poweredby";
 		} );
 	} );
-
-/*
-algoliaAutocomplete.sources.hits( client.initIndex( 'wp_dummysearchable_posts' ), {
-					hitsPerPage: 5,//config[ 'max_suggestions' ],
-					attributesToSnippet: [
-						'content:10'
-					],
-					highlightPreTag: '__ais-highlight__',
-					highlightPostTag: '__/ais-highlight__'
-				} )
-*/
 </script>

@@ -38,12 +38,12 @@ class Typesense_Search {
 	private $total_hits;
 
 	/**
-	 * Instance of Typesense_Index.
+	 * Instance of Algolia_Index.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @var Typesense_Index
+	 * @var Algolia_Index
 	 */
 	private $index;
 
@@ -53,9 +53,9 @@ class Typesense_Search {
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
-	 * @param Typesense_Index $index Instance of Typesense_Index.
+	 * @param Algolia_Index $index Instance of Algolia_Index.
 	 */
-	public function __construct( Typesense_Index $index ) {
+	public function __construct( Algolia_Index $index ) {
 		$this->index = $index;
 
 		add_action( 'loop_start', [ $this, 'begin_highlighting' ] );

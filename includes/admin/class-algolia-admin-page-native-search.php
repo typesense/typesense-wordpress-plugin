@@ -1,6 +1,6 @@
 <?php
 /**
- * Typesense_Admin_Page_Native_Search class file.
+ * Algolia_Admin_Page_Native_Search class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -9,11 +9,11 @@
  */
 
 /**
- * Class Typesense_Admin_Page_Native_Search
+ * Class Algolia_Admin_Page_Native_Search
  *
  * @since 1.0.0
  */
-class Typesense_Admin_Page_Native_Search {
+class Algolia_Admin_Page_Native_Search {
 
 	/**
 	 * Admin page slug.
@@ -66,7 +66,7 @@ class Typesense_Admin_Page_Native_Search {
 	private $plugin;
 
 	/**
-	 * Typesense_Admin_Page_Native_Search constructor.
+	 * Algolia_Admin_Page_Native_Search constructor.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0

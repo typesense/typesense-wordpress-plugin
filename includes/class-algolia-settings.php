@@ -101,8 +101,8 @@ class Typesense_Settings {
 	 *
 	 * @author     WebDevStudios <contact@webdevstudios.com>
 	 * @since      1.0.0
-	 * @deprecated 1.7.0 Use Typesense_Settings::get_excluded_post_types()
-	 * @see        Typesense_Settings::get_excluded_post_types()
+	 * @deprecated 1.7.0 Use Algolia_Settings::get_excluded_post_types()
+	 * @see        Algolia_Settings::get_excluded_post_types()
 	 *
 	 * @return array
 	 */
@@ -110,7 +110,7 @@ class Typesense_Settings {
 		_deprecated_function(
 			__METHOD__,
 			'1.7.0',
-			'Typesense_Settings::get_excluded_post_types();'
+			'Algolia_Settings::get_excluded_post_types();'
 		);
 
 		return $this->get_excluded_post_types();
@@ -133,15 +133,15 @@ class Typesense_Settings {
 		 * Filters excluded post types.
 		 *
 		 * @since      1.0.0
-		 * @deprecated 1.7.0 Use {@see 'typesense_excluded_post_types'} instead.
+		 * @deprecated 1.7.0 Use {@see 'algolia_excluded_post_types'} instead.
 		 *
 		 * @param array $excluded The excluded post types.
 		 */
 		$excluded = (array) apply_filters_deprecated(
-			'typesense_post_types_blacklist',
+			'algolia_post_types_blacklist',
 			[ $excluded ],
 			'1.7.0',
-			'typesense_excluded_post_types'
+			'algolia_excluded_post_types'
 		);
 
 		/**
@@ -151,12 +151,12 @@ class Typesense_Settings {
 		 *
 		 * @param array $excluded The excluded post types.
 		 */
-		$excluded = (array) apply_filters( 'typesense_excluded_post_types', $excluded );
+		$excluded = (array) apply_filters( 'algolia_excluded_post_types', $excluded );
 
 		// Native WordPress.
 		$excluded[] = 'revision';
 
-		// Native to Typesense Search plugin.
+		// Native to Algolia Search plugin.
 		$excluded[] = 'typesense_task';
 		$excluded[] = 'typesense_log';
 
@@ -203,8 +203,8 @@ class Typesense_Settings {
 	 *
 	 * @author     WebDevStudios <contact@webdevstudios.com>
 	 * @since      1.0.0
-	 * @deprecated 1.7.0 Use Typesense_Settings::get_excluded_taxonomies()
-	 * @see        Typesense_Settings::get_excluded_taxonomies()
+	 * @deprecated 1.7.0 Use Algolia_Settings::get_excluded_taxonomies()
+	 * @see        Algolia_Settings::get_excluded_taxonomies()
 	 *
 	 * @return array
 	 */
@@ -212,7 +212,7 @@ class Typesense_Settings {
 		_deprecated_function(
 			__METHOD__,
 			'1.7.0',
-			'Typesense_Settings::get_excluded_taxonomies();'
+			'Algolia_Settings::get_excluded_taxonomies();'
 		);
 
 		return $this->get_excluded_taxonomies();
@@ -244,10 +244,10 @@ class Typesense_Settings {
 		 * @param array $excluded The excluded taxonomies.
 		 */
 		$excluded = (array) apply_filters_deprecated(
-			'typesense_taxonomies_blacklist',
+			'algolia_taxonomies_blacklist',
 			[ $excluded ],
 			'1.7.0',
-			'typesense_excluded_taxonomies'
+			'algolia_excluded_taxonomies'
 		);
 
 		$excluded = (array) apply_filters( 'typesense_excluded_taxonomies', $excluded );

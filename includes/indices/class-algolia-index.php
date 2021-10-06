@@ -1,6 +1,6 @@
 <?php
 /**
- * Typesense_Index class file.
+ * Algolia_Index class file.
  *
  * @author  WebDevStudios <contact@webdevstudios.com>
  * @since   1.0.0
@@ -11,11 +11,11 @@
 use Typesense\Client;
 
 /**
- * Class Typesense_Index
+ * Class Algolia_Index
  *
  * @since 1.0.0
  */
-abstract class Typesense_Index {
+abstract class Algolia_Index {
 
 	/**
 	 * The Client instance.
@@ -65,6 +65,16 @@ abstract class Typesense_Index {
 	 *
 	 */
 	protected $name;
+
+	/**
+	 * Whether the reindexing operation is running or not.
+	 *
+	 * @author WebDevStudios <contact@webdevstudios.com>
+	 * @since  2.1.0
+	 *
+	 * @var bool
+	 */
+	protected $reindexing = false;
 
 	/**
 	 * Get the admin name for this index.
@@ -224,8 +234,8 @@ abstract class Typesense_Index {
 		$this->create_collection_if_not_existing();
 		$records = $this->get_records( $post );
 		try{
-			$this->update_records( $post, $records );	
-		}			
+			$this->update_records( $post, $records );
+		}
 		catch(Exception $e){
 			throw $e;
 		}
@@ -319,8 +329,113 @@ abstract class Typesense_Index {
 	 *
 	 * @return string
 	 */
-	public function get_name() {
-		return $prefix . $this->get_id();
+    public function get_name( $prefix = null ) {
+        if ( null === $prefix ) {
+            $prefix = $this->name_prefix;
+        }
+
+        return $prefix . $this->get_id();
+    }
+
+	/**
+	 * Re index.
+	 *
+	 * @author WebDevStudios <contact@webdevstudios.com>
+	 * @since  1.0.0
+	 *
+	 * @param int $page Page of the index.
+	 *
+	 * @throws InvalidArgumentException If the page is less than 1.
+	 */
+	public function re_index( $page ) {
+		$page = (int) $page;
+
+		if ( $page < 1 ) {
+			throw new InvalidArgumentException( 'Page should be superior to 0.' );
+		}
+
+		if ( 1 === $page ) {
+			$this->create_index_if_not_existing();
+		}
+
+		$batch_size = (int) $this->get_re_index_batch_size();
+
+		if ( $batch_size < 1 ) {
+			throw new InvalidArgumentException( 'Re-index batch size can not be lower than 1.' );
+		}
+
+		$items_count = $this->get_re_index_items_count();
+
+		$max_num_pages = (int) max( ceil( $items_count / $batch_size ), 1 );
+
+		$items = $this->get_items( $page, $batch_size );
+
+		$records = array();
+
+		/**
+		 * Set the reindexing bit to true.
+		 */
+		$this->reindexing = true;
+
+		foreach ( $items as $item ) {
+			if ( ! $this->should_index( $item ) ) {
+				$this->delete_item( $item );
+				continue;
+			}
+
+			do_action( 'algolia_before_get_records', $item );
+			$item_records = $this->get_records( $item );
+			$records      = array_merge( $records, $item_records );
+			do_action( 'algolia_after_get_records', $item );
+
+			$this->update_records( $item, $item_records );
+		}
+
+		if ( ! empty( $records ) ) {
+
+			/**
+			 * Filters the records to be reindexed.
+			 *
+			 * @since 2.1.0
+			 *
+			 * @param array  $records  Array of records to re-index.
+			 * @param int    $page     Page to re-index.
+			 * @param string $index_id The index ID without prefix.
+			 */
+			$records = apply_filters(
+				'algolia_re_index_records',
+				$records,
+				$page,
+				$this->get_id()
+			);
+
+			try {
+				$sanitized_records = $this->sanitize_json_data( $records );
+			} catch ( \Throwable $throwable ) {
+				error_log( $throwable->getMessage() ); // phpcs:ignore -- Need a real logger.
+			}
+		}
+
+		// Don't saveObjects if sanitize_json_data failed.
+		if ( ! empty( $sanitized_records ) ) {
+
+			$index = $this->get_index();
+
+			try {
+				$index->saveObjects( $sanitized_records );
+			} catch ( \Throwable $throwable ) {
+				error_log( $throwable->getMessage() ); // phpcs:ignore -- Need a real logger.
+			}
+		}
+
+		/**
+		 * Set the reindexing bit back to false.
+		 */
+		$this->reindexing = false;
+
+		if ( $page === $max_num_pages ) {
+			do_action( 'algolia_re_indexed_items', $this->get_id() );
+		}
 	}
 
 	/**
@@ -359,6 +474,8 @@ abstract class Typesense_Index {
 	 * Sanitize data to allow non UTF-8 content to pass.
 	 * Here we use a private function introduced in WP 4.1.
 	 *
+	 * Since WPSWA v 1.1.0, minimum suppported WordPress version is 5.0.
+	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
 	 * @since  1.0.0
 	 *
@@ -366,14 +483,10 @@ abstract class Typesense_Index {
 	 *
 	 * @return mixed The sanitized data that shall be encoded to JSON.
 	 *
-	 * @throws Exception If depth is less than zero.
+	 * @throws Exception If depth limit is reached.
 	 */
 	protected function sanitize_json_data( $data ) {
-		if ( function_exists( '_wp_json_sanity_check' ) ) {
-			return _wp_json_sanity_check( $data, 512 );
-		}
-
-		return $data;
+		return _wp_json_sanity_check( $data, 512 );
 	}
 
 	/**
@@ -507,7 +620,7 @@ abstract class Typesense_Index {
 			],
 			'default_sorting_field' => 'posts_count'
 		  ];
-		  
+
 		try{
 			$this->client->collections->create($postsSchema);
 		  }
@@ -553,6 +666,110 @@ abstract class Typesense_Index {
 			'max_suggestions' => 5,
 			'tmpl_suggestion' => 'autocomplete-post-suggestion',
 		);
+	}
+
+	/**
+	 * To array method.
+	 *
+	 * @author WebDevStudios <contact@webdevstudios.com>
+	 * @since  1.0.0
+	 *
+	 * @return array
+	 */
+	public function to_array() {
+		$replicas = $this->get_replicas();
+
+		$items = array();
+		foreach ( $replicas as $replica ) {
+			$items[] = array(
+				'name' => $replica->get_replica_index_name( $this ),
+			);
+		}
+
+		return array(
+			'name'     => $this->get_name(),
+			'id'       => $this->get_id(),
+			'enabled'  => $this->enabled,
+			'replicas' => $items,
+		);
+	}
+
+	/**
+	 * Get replicas.
+	 *
+	 * @author WebDevStudios <contact@webdevstudios.com>
+	 * @since  1.0.0
+	 *
+	 * @return array
+	 */
+	public function get_replicas() {
+		$replicas = (array) apply_filters( 'algolia_index_replicas', array(), $this );
+		$replicas = (array) apply_filters( 'algolia_' . $this->get_id() . '_index_replicas', $replicas, $this );
+
+		$filtered = array();
+		// Filter out invalid inputs.
+		foreach ( $replicas as $replica ) {
+			if ( ! $replica instanceof Algolia_Index_Replica ) {
+				continue;
+			}
+			$filtered[] = $replica;
+		}
+
+		return $filtered;
+	}
+
+	/**
+	 * Sync replicas.
+	 *
+	 * @author WebDevStudios <contact@webdevstudios.com>
+	 * @since  1.0.0
+	 */
+	private function sync_replicas() {
+		$replicas = $this->get_replicas();
+		if ( empty( $replicas ) ) {
+			// No need to go further if there are no replicas!
+			return;
+		}
+
+		$replica_index_names = array();
+
+		/**
+		 * Loop over the replicas.
+		 *
+		 * @author WebDevStudios <contact@webdevstudios.com>
+		 * @since  1.0.0
+		 *
+		 * @var Algolia_Index_Replica $replica
+		 */
+		foreach ( $replicas as $replica ) {
+			$replica_index_names[] = $replica->get_replica_index_name( $this );
+		}
+
+		$this->get_index()->setSettings(
+			array(
+				'replicas' => $replica_index_names,
+			)
+		);
+
+		$client = $this->get_client();
+
+		// Ensure we re-push the master index settings each time.
+		$settings = $this->get_settings();
+
+		/**
+		 * Loop over the replicas.
+		 *
+		 * @author WebDevStudios <contact@webdevstudios.com>
+		 * @since  1.0.0
+		 *
+		 * @var Algolia_Index_Replica $replica
+		 */
+		foreach ( $replicas as $replica ) {
+			$settings['ranking'] = $replica->get_ranking();
+			$replica_index_name  = $replica->get_replica_index_name( $this );
+			$index               = $client->initIndex( $replica_index_name );
+			$index->setSettings( $settings );
+		}
 	}
 
 	/**

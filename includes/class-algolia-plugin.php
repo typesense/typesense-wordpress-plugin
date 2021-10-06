@@ -88,6 +88,16 @@ class Typesense_Plugin {
 	private $scripts;
 
 	/**
+	 * Instance of Algolia_Update_Messages.
+	 *
+	 * @author WebDevStudios <contact@webdevstudios.com>
+	 * @since  1.8.0
+	 *
+	 * @var Algolia_Update_Messages
+	 */
+	private $update_messages;
+
+	/**
 	 * Instance of Typesense_Template_Loader.
 	 *
 	 * @author WebDevStudios <contact@webdevstudios.com>
@@ -148,7 +158,7 @@ class Typesense_Plugin {
 		$this->load_indices();
 		// Load admin or public part of the plugin.
 		if ( is_admin() ) {
-			new Typesense_Admin( $this );
+			new Algolia_Admin( $this );
 		}
 	}
 
@@ -253,9 +263,9 @@ class Typesense_Plugin {
 		$client            = $this->get_api()->get_client();
 		$index_name_prefix = $this->settings->get_index_name_prefix();
 		$this->indices=array();
-		$this->indices[] = new Typesense_Posts_Index('post');
+		$this->indices[] = new Algolia_Posts_Index('post');
 
-		$this->indices[1] = new Typesense_Terms_Index( 'category' );
+		$this->indices[1] = new Algolia_Terms_Index( 'category' );
 
 		$this->indices[0]->set_client( $client);
 		$this->indices[1]->set_client( $client);
@@ -289,7 +299,7 @@ class Typesense_Plugin {
 	 *
 	 * @param string $index_id The ID of the index to get.
 	 *
-	 * @return Typesense_Index|null
+	 * @return Algolia_Index|null
 	 */
 	public function get_index( $index_id ) {
 		foreach ( $this->indices as $index ) {
@@ -316,13 +326,23 @@ class Typesense_Plugin {
 	/**
 	 * Get the templates path.
 	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
+	 * Somewhat misleading method name.
+	 * Actually returns a path segment (directory name) with trailing slash.
+	 *
+	 * @author     WebDevStudios <contact@webdevstudios.com>
+	 * @since      1.0.0
+	 * @deprecated 1.8.0 Use Algolia_Template_Utils::get_filtered_theme_templates_dirname()
+	 * @see        Algolia_Template_Utils::get_filtered_theme_templates_dirname()
 	 *
 	 * @return string
 	 */
 	public function get_templates_path() {
-		return (string) apply_filters( 'typesense_templates_path', 'typesense/' );
+		_deprecated_function(
+			__METHOD__,
+			'1.8.0',
+			'Algolia_Template_Utils::get_filtered_theme_templates_dirname()'
+		);
+		return (string) Algolia_Template_Utils::get_filtered_theme_templates_dirname();
 	}
 
 	/**
