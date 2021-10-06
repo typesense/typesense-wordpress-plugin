@@ -74,8 +74,9 @@ class Algolia_Autocomplete_Config {
 		}
 
 		usort(
-			$config, function( $a, $b ) {
-				return $a['position'] > $b['position'];
+			$config,
+			function( $a, $b ):int {
+				return $a['position'] <=> $b['position'];
 			}
 		);
 
@@ -175,15 +176,17 @@ class Algolia_Autocomplete_Config {
 
 		// Remove manually disabled indices.
 		$config = array_filter(
-			$config, function( $item ) {
+			$config,
+			function( $item ) {
 				return (bool) $item['enabled'];
 			}
 		);
 
 		// Sort the indices.
 		usort(
-			$config, function( $a, $b ) {
-				return $a['position'] > $b['position'];
+			$config,
+			function( $a, $b ):int {
+				return $a['position'] <=> $b['position'];
 			}
 		);
 

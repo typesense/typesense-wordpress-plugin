@@ -2,6 +2,9 @@
 
 namespace Algolia\AlgoliaSearch\Config;
 
+/**
+ * @deprecated Please use Algolia\AlgoliaSearch\Config\PersonalizationConfig instead
+ */
 final class RecommendationConfig extends AbstractConfig
 {
     /**
@@ -13,11 +16,11 @@ final class RecommendationConfig extends AbstractConfig
      */
     public static function create($appId = null, $apiKey = null, $region = null)
     {
-        $config = array(
+        $config = [
             'appId' => null !== $appId ? $appId : getenv('ALGOLIA_APP_ID'),
             'apiKey' => null !== $apiKey ? $apiKey : getenv('ALGOLIA_API_KEY'),
             'region' => null !== $region ? $region : 'us',
-        );
+        ];
 
         return new self($config);
     }
