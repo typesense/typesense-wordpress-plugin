@@ -16,9 +16,6 @@
 		<button type="button" class="algolia-reindex-button button button-primary" data-index="searchable_posts">
 			<?php esc_html_e( 'Re-index search page records', 'wp-search-with-algolia' ); ?>
 		</button>
-		<button type="button" class="algolia-push-settings-button button" data-index="searchable_posts">
-			<?php esc_html_e( 'Push Settings', 'wp-search-with-algolia' ); ?>
-		</button>
 	</h1>
 	<form method="post" action="options.php">
 		<?php

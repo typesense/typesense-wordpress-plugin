@@ -51,7 +51,6 @@
 			</td>
 			<td>
 				<button type="button" class="algolia-reindex-button button button-primary" data-index="<?php echo esc_attr( $index['index_id'] ); ?>"><?php esc_html_e( 'Re-index', 'wp-search-with-algolia' ); ?></button>
-				<button type="button" class="algolia-push-settings-button button" data-index="<?php echo esc_attr( $index['index_id'] ); ?>"><?php esc_html_e( 'Push Settings', 'wp-search-with-algolia' ); ?></button>
 			</td>
 		</tr>
 		<?php endforeach; ?>
