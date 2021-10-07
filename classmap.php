@@ -15,6 +15,7 @@ if ( ! defined( 'ALGOLIA_PATH' ) ) {
 // The Algolia Search PHP API SearchClient.
 if ( apply_filters( 'algolia_should_require_search_client', true ) ) {
 	require_once ALGOLIA_PATH . 'includes/libraries/algoliasearch-client-php/autoload.php';
+	require_once ALGOLIA_PATH . 'includes/libraries/typesense-php/autoload.php';
 }
 
 require_once ALGOLIA_PATH . 'includes/factories/class-algolia-http-client-interface-factory.php';

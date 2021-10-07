@@ -154,7 +154,7 @@ msgid "Settings"
 msgstr "Impostazioni"
 
 #: includes/admin/class-algolia-admin-page-settings.php:154
-msgid "Application ID"
+msgid "Typesense Host(s)"
 msgstr "ID applicazione"
 
 #: includes/admin/class-algolia-admin-page-settings.php:162
@@ -166,23 +166,23 @@ msgid "Admin API key"
 msgstr "Chiave API Admin"
 
 #: includes/admin/class-algolia-admin-page-settings.php:178
-msgid "Index name prefix"
+msgid "Collection name prefix"
 msgstr "Prefisso nome indice"
 
 #: includes/admin/class-algolia-admin-page-settings.php:186
-msgid "Remove Algolia powered by logo"
+msgid "Remove Typesense powered by logo"
 msgstr "Rimuovi il luogo powered by Algolia"
 
 #: includes/admin/class-algolia-admin-page-settings.php:212
-msgid "Your Algolia Application ID."
+msgid "Your Typesense Host(s). Eg: https://typesense-1.domain.net:443,https://typesense-2.domain.net:443."
 msgstr "Il tuo application ID Algolia."
 
 #: includes/admin/class-algolia-admin-page-settings.php:229
-msgid "Your Algolia Search-only API key (public)."
+msgid "Your Typesense Search-only API key (public)."
 msgstr "La tua chiave di sola ricerca Algolia (pubblica)."
 
 #: includes/admin/class-algolia-admin-page-settings.php:245
-msgid "Your Algolia ADMIN API key (kept private)."
+msgid "Your Typesense ADMIN API key (kept private)."
 msgstr "La tua chiave API ADMIN di Algolia ( mantinenila segreta)."
 
 #: includes/admin/class-algolia-admin-page-settings.php:261
@@ -191,15 +191,14 @@ msgstr "Questo prefisso verrà anteposto ai nomi dei tuoi indici."
 
 #: includes/admin/class-algolia-admin-page-settings.php:278
 msgid ""
-"This will remove the Algolia logo from the autocomplete and the search page. "
-"We require that you keep the Algolia logo if you are using a free plan."
+"This will remove the Typesense logo from the autocomplete and the search page."
 msgstr ""
 "Questo permetterà di rimuovere il logo di Algolia dall'autocompletamento e "
 "dalla pagina di ricerca. E' richiesto mantenere il logo se si sta usando un "
 "piano gratuito."
 
 #: includes/admin/class-algolia-admin-page-settings.php:301
-msgid "Application ID should not be empty."
+msgid "Typesense Host(s) should not be empty."
 msgstr "Il campo ID applicazione non può essere vuoto."
 
 #: includes/admin/class-algolia-admin-page-settings.php:329
@@ -212,8 +211,8 @@ msgstr "Il campo chiave API non può essere vuoto"
 
 #: includes/admin/class-algolia-admin-page-settings.php:386
 msgid ""
-"We were unable to authenticate you against the Algolia servers with the "
-"provided information. Please ensure that you used a valid Application ID and "
+"We were unable to authenticate you against the Typesense Host(s) with the "
+"provided information. Please ensure that you used a valid Typesense Host(s) and "
 "Admin API key."
 msgstr ""
 
@@ -229,7 +228,7 @@ msgstr ""
 
 #: includes/admin/class-algolia-admin-page-settings.php:406
 msgid ""
-"We succesfully managed to connect to the Algolia servers with the provided "
+"We succesfully managed to connect to the Typesense Host(s) with the provided "
 "information. Your search API key has also been checked and is OK."
 msgstr ""
 "Abbiamo gestito correttamente il collegamento ai server Algolia con le "
@@ -245,16 +244,15 @@ msgstr ""
 
 #: includes/admin/class-algolia-admin-page-settings.php:503
 msgid ""
-"Configure your Algolia account credentials. You can find them in the \"API "
-"Keys\" section of your Algolia dashboard."
+"Configure your Typesense credentials."
 msgstr ""
 "Configura qui le tua credenziali di Algolia. Le puoi trovare nella sezione "
 "\"Chiavi API\" della dashboard di Algolia."
 
 #: includes/admin/class-algolia-admin-page-settings.php:504
 msgid ""
-"Once you provide your Algolia Application ID and API key, this plugin will "
-"be able to securely communicate with Algolia servers."
+"Once you provide your Typesense Host(s) and API key, this plugin will "
+"be able to securely communicate with Typesense Host(s)."
 msgstr ""
 "Una volta che avrai inserito il tuo ID applicazione e la chiave API di "
 "Algolia, questo plugin sarà in grado di comunicare in modo sicuro con i "
@@ -272,7 +270,7 @@ msgstr ""
 #: includes/admin/class-algolia-admin-page-settings.php:506
 #, php-format
 msgid ""
-"No Algolia account yet? <a href=\"%s\">Follow this link</a> to create one "
+"No Typesense account yet? <a href=\"%s\">Follow this link</a> to create one "
 "for free in a couple of minutes!"
 msgstr ""
 "Non hai ancora un account Algolia? <a href=\"%s\"> Segui questo link </a> "
@@ -510,9 +508,9 @@ msgid "https://webdevstudios.com"
 msgstr ""
 
 #~ msgid ""
-#~ "We were unable to authenticate you against the Algolia servers with the "
+#~ "We were unable to authenticate you against the Typesense Host(s) with the "
 #~ "provided information. Please ensure that you used an the Admin API key "
-#~ "and a valid Application ID."
+#~ "and a valid Typesense Host(s)."
 #~ msgstr ""
 #~ "Non siamo stati in grado di autenticarvi contro i server dell'Algolia con "
 #~ "le informazioni fornite. Assicurati di aver utilizzato una chiave API di "

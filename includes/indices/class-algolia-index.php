@@ -11,6 +11,7 @@
 use Algolia\AlgoliaSearch\Exceptions\AlgoliaException;
 use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\AlgoliaSearch\SearchIndex;
+use Typesense\Client;
 
 /**
  * Class Algolia_Index
@@ -130,15 +131,15 @@ abstract class Algolia_Index {
 		}
 	}
 
-	/**
-	 * Set the SearchClient.
-	 *
-	 * @author WebDevStudios <contact@webdevstudios.com>
-	 * @since  1.0.0
-	 *
-	 * @param SearchClient $client The SearchClient instance.
-	 */
-	final public function set_client( SearchClient $client ) {
+    /**
+     * Set the SearchClient.
+     *
+     * @author WebDevStudios <contact@webdevstudios.com>
+     * @since  1.0.0
+
+     * @param Client $client The SearchClient instance.
+     */
+	final public function set_client( Client $client ) {
 		$this->client = $client;
 	}
 
